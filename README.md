@@ -1,4 +1,4 @@
-# CHEN ZIXUAN — Personal Website
+# 陈紫璇 — 个人网站
 
 陈紫璇的个人作品集网站，展示 AI 产品、智能硬件、交互式体验和 AIGC 创意项目。
 
@@ -25,4 +25,3 @@ python3 -m http.server 8000
 - `assets/styles.css`：主站样式
 - `assets/site.js`：主站交互
 - `assets/demos/`：项目案例与互动原型
-
