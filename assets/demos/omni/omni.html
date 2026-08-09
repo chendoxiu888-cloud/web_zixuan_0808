@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Omni：macOS 上的 AI 滑词助手，用一个快捷键把选中的文字变成解释、总结、翻译和更好的表达。" />
+    <title>Omni — 让每一次选词，都更有用</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Omni 首页">
+        <span class="brand-mark">✦</span>
+        <span>OMNI</span>
+      </a>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#how-to-use">使用步骤</a>
+        <a href="#features">产品能力</a>
+        <a href="#workflow">产品功能</a>
+        <a href="#use-cases">使用场景</a>
+      </nav>
+      <a class="nav-cta" href="Omni-0.2.dmg" download="Omni-0.2.dmg">下载 Omni</a>
+    </header>
+
+    <main id="top">
+      <section class="hero section-shell">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> AI 滑词助手 · macOS</div>
+          <h1>每一次<em>选词</em>，<br />都是一次更好的表达。</h1>
+          <p class="hero-lede">Omni 住在你的屏幕边缘。选中一段文字，按下快捷键，让解释、总结、翻译和润色马上出现。</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="#download">开始使用 Omni</a>
+            <a class="text-link" href="#workflow">看看它怎么工作 <span>↓</span></a>
+          </div>
+          <div class="hero-meta"><span>⌘ 一键唤出</span><span>● 自带模型自由切换</span><span>◌ macOS 原生体验</span></div>
+        </div>
+
+        <div class="hero-collage reveal delay-1" aria-label="Omni 产品界面预览">
+          <div class="collage-note note-top">选中 · 呼出 · 完成</div>
+          <div class="paper paper-left">
+            <span class="paper-kicker">A FIELD NOTE</span>
+            <h3>Ideas are<br /><span>everywhere.</span></h3>
+            <p>Capture the useful part before it slips away.</p>
+            <span class="paper-line"></span>
+          </div>
+          <div class="paper paper-right">
+            <div class="paper-image image-sun"></div>
+            <div class="paper-caption">tiny rituals for a clearer day</div>
+          </div>
+          <div class="omni-window">
+            <div class="window-bar">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <span class="window-model" id="hero-model">deepseek-v4-flash</span>
+              <span class="window-spark">✦</span>
+            </div>
+            <div class="window-selection">Capture the useful part before it slips away.</div>
+            <div class="window-divider"></div>
+            <div class="prompt-stack">
+              <button class="prompt-row active" data-prompt="解释" data-copy="帮你拆开概念、补充上下文，让难懂的内容变得清楚。"><span class="prompt-icon">◉</span><span><b>解释</b><small>把复杂内容说清楚</small></span><span class="prompt-arrow">↗</span></button>
+              <button class="prompt-row" data-prompt="总结" data-copy="提取重点，压缩成一眼能读完的要点。"><span class="prompt-icon">▤</span><span><b>总结</b><small>留下真正重要的部分</small></span><span class="prompt-arrow">↗</span></button>
+              <button class="prompt-row" data-prompt="翻译为中文" data-copy="保留语气和上下文，把外文变成自然的中文。"><span class="prompt-icon">◎</span><span><b>翻译为中文</b><small>跨过语言的那一步</small></span><span class="prompt-arrow">↗</span></button>
+              <button class="prompt-row" data-prompt="润色" data-copy="不改变你的意思，让每句话都更顺、更有分寸。"><span class="prompt-icon">↗</span><span><b>润色</b><small>让表达更像你想说的</small></span><span class="prompt-arrow">↗</span></button>
+            </div>
+            <div class="window-response" id="hero-response">帮你拆开概念、补充上下文，让难懂的内容变得清楚。</div>
+          </div>
+          <div class="collage-note note-bottom">one shortcut, many directions</div>
+        </div>
+      </section>
+
+      <section class="proof-strip section-shell reveal">
+        <span class="proof-label">一个快捷键，覆盖你的日常</span>
+        <div class="proof-items"><span>解释</span><span>总结</span><span>翻译</span><span>润色</span><span>续写</span></div>
+      </section>
+
+      <section class="how-to-use section-shell" id="how-to-use">
+        <div class="section-intro reveal"><span class="section-number">HOW IT WORKS /</span><h2>三步，把 AI 放进<br /><span>你正在做的事里。</span></h2><p>不需要学习新的工作台。Omni 把操作压缩成一个自然的小动作，顺着你的阅读和写作节奏完成。</p></div>
+        <div class="usage-grid">
+          <article class="usage-card reveal">
+            <div class="usage-art usage-select" aria-label="选中文字示意图">
+              <svg viewBox="0 0 460 250" role="img" aria-hidden="true">
+                <rect width="460" height="250" rx="18" fill="#171911"/>
+                <rect x="38" y="33" width="384" height="184" rx="9" fill="#0d0f09"/>
+                <circle cx="60" cy="53" r="5" fill="#c6fb3f"/><circle cx="77" cy="53" r="5" fill="#3a3d2f"/><circle cx="94" cy="53" r="5" fill="#3a3d2f"/>
+                <rect x="66" y="83" width="120" height="9" rx="4.5" fill="#4a4e3d"/><rect x="66" y="104" width="286" height="8" rx="4" fill="#2a2d22"/><rect x="66" y="124" width="245" height="8" rx="4" fill="#2a2d22"/>
+                <rect x="65" y="145" width="258" height="21" rx="5" fill="#c6fb3f" opacity=".85"/><rect x="66" y="151" width="238" height="8" rx="4" fill="#171911"/>
+                <path d="M323 142l26 18-10 2 7 17-6 3-8-17-7 8z" fill="#c6fb3f"/>
+              </svg>
+            </div>
+            <div class="usage-number">01</div><h3>选中你想处理的文字</h3><p>网页、邮件、文档或聊天里，看到任何想弄懂或改好的句子，直接选中它。</p>
+          </article>
+          <article class="usage-card reveal delay-1">
+            <div class="usage-art usage-shortcut" aria-label="使用快捷键示意图">
+              <svg viewBox="0 0 460 250" role="img" aria-hidden="true">
+                <rect width="460" height="250" rx="18" fill="#14150e"/>
+                <ellipse cx="228" cy="194" rx="150" ry="18" fill="#c6fb3f" opacity=".08"/>
+                <rect x="82" y="111" width="276" height="90" rx="16" fill="#1c1f15" transform="rotate(-5 82 111)"/>
+                <g transform="rotate(-5 82 111)" fill="#2f3325"><rect x="105" y="132" width="35" height="21" rx="5"/><rect x="148" y="132" width="35" height="21" rx="5"/><rect x="191" y="132" width="35" height="21" rx="5"/><rect x="234" y="132" width="35" height="21" rx="5"/><rect x="277" y="132" width="35" height="21" rx="5"/><rect x="128" y="161" width="35" height="21" rx="5"/><rect x="171" y="161" width="110" height="21" rx="5"/></g>
+                <g transform="rotate(7 250 83)"><rect x="179" y="35" width="143" height="66" rx="13" fill="#c6fb3f"/><text x="201" y="63" fill="#0d0f09" font-size="17" font-family="DM Mono, monospace">⌥</text><text x="244" y="63" fill="#0d0f09" font-size="17" font-family="DM Mono, monospace">+</text><text x="267" y="63" fill="#0d0f09" font-size="14" font-family="DM Mono, monospace">SPACE</text><text x="205" y="85" fill="#3d4a2f" font-size="9" font-family="DM Mono, monospace">ONE SHORTCUT</text></g>
+              </svg>
+            </div>
+            <div class="usage-number">02</div><h3>按下一个快捷键</h3><p>Omni 会从屏幕边缘出现，不打断当前页面，也不用复制粘贴来回切换。</p>
+          </article>
+          <article class="usage-card reveal delay-2">
+            <div class="usage-art usage-result" aria-label="选择 AI 动作示意图">
+              <svg viewBox="0 0 460 250" role="img" aria-hidden="true">
+                <rect width="460" height="250" rx="18" fill="#111309"/>
+                <rect x="94" y="28" width="272" height="195" rx="18" fill="#181b12"/>
+                <rect x="113" y="45" width="62" height="14" rx="7" fill="#c6fb3f"/><circle cx="340" cy="52" r="6" fill="#313526"/>
+                <rect x="113" y="75" width="234" height="34" rx="8" fill="#20241a"/><rect x="126" y="88" width="160" height="8" rx="4" fill="#5a6249"/>
+                <g><rect x="113" y="120" width="107" height="31" rx="8" fill="#1c1f15"/><rect x="232" y="120" width="115" height="31" rx="8" fill="#1c1f15"/><rect x="113" y="160" width="107" height="31" rx="8" fill="#1c1f15"/><rect x="232" y="160" width="115" height="31" rx="8" fill="#1c1f15"/></g>
+                <g fill="#c6fb3f"><circle cx="130" cy="135" r="5"/><circle cx="249" cy="135" r="5"/><circle cx="130" cy="175" r="5"/><circle cx="249" cy="175" r="5"/></g>
+                <g fill="#565c48"><rect x="143" y="132" width="54" height="6" rx="3"/><rect x="262" y="132" width="60" height="6" rx="3"/><rect x="143" y="172" width="49" height="6" rx="3"/><rect x="262" y="172" width="54" height="6" rx="3"/></g>
+                <path d="M66 185c30-12 45-8 61 10" fill="none" stroke="#c6fb3f" stroke-width="3" stroke-linecap="round"/><circle cx="62" cy="184" r="5" fill="#c6fb3f"/>
+              </svg>
+            </div>
+            <div class="usage-number">03</div><h3>选择动作，拿走结果</h3><p>解释、总结、翻译、润色或续写。你可以自由切换模型，把结果带回原来的工作流。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="features section-shell" id="features">
+        <div class="section-intro reveal"><span class="section-number">01 /</span><h2>不是又一个聊天窗口。<br /><span>是你工作流里的那一秒。</span></h2><p>Omni 不打断你。它只在你需要的时候出现，读懂上下文，然后把下一步交到你手里。</p></div>
+        <div class="feature-grid">
+          <article class="feature-card feature-large reveal"><div class="card-index">01</div><div class="card-visual shortcut-visual"><span class="keycap">⌥</span><span class="plus">+</span><span class="keycap wide">Space</span><span class="orbit orbit-a"></span><span class="orbit orbit-b"></span></div><h3>一个快捷键<br />立刻开始</h3><p>不用复制、切换窗口、再粘贴。选中文字，按下快捷键，Omni 会出现在原地。</p></article>
+          <article class="feature-card feature-coral reveal delay-1"><div class="card-index">02</div><div class="card-visual model-visual"><span class="model-pill">deepseek-v4-flash</span><span class="model-pill muted">deepseek-v4-pro</span><span class="model-pill ghost">your model</span><div class="model-line"></div></div><h3>模型由你<br />选择</h3><p>连接 OpenAI 兼容接口，按自己的 API 和模型工作，不被单一供应商锁住。</p></article>
+          <article class="feature-card feature-cream reveal delay-2"><div class="card-index">03</div><div class="card-visual privacy-visual"><span>LOCAL</span><strong>你的文字<br />只为你服务</strong><small>按需调用 · 可控连接 · 不留上下文</small></div><h3>轻量、克制<br />更尊重隐私</h3><p>没有复杂的账户体系，也没有信息流。你决定连什么、何时发送。</p></article>
+        </div>
+      </section>
+
+      <section class="workflow section-shell" id="workflow">
+        <div class="workflow-art reveal"><div class="workflow-card card-back"><span>SELECT</span><b>→</b></div><div class="workflow-card card-mid"><span>⌘</span><b>+</b><span>SPACE</span></div><div class="workflow-card card-front"><span class="mini-spark">✦</span><strong>一秒进入<br />下一步</strong><small>不离开当前页面</small></div><div class="scribble">so simple</div></div>
+        <div class="workflow-copy reveal delay-1">
+          <span class="section-number">02 /</span>
+          <h2>从选中到完成，<br /><em>只差一个动作。</em></h2>
+          <p class="workflow-lede">不用打开新窗口，也不用在应用之间来回切换。整个过程发生在你正在读、正在写的那个地方。</p>
+          <div class="steps">
+            <div class="step"><span class="step-badge">01</span><p><b>选中</b><small>在网页、文档、邮件里选中任意文字。</small></p></div>
+            <div class="step"><span class="step-badge">02</span><p><b>唤出</b><small>按下快捷键，Omni 读取当下的上下文。</small></p></div>
+            <div class="step"><span class="step-badge">03</span><p><b>完成</b><small>选择一个动作，把结果带回你的工作流。</small></p></div>
+          </div>
+          <div class="workflow-stats">
+            <div class="stat"><b>0</b><span>次复制粘贴</span></div>
+            <div class="stat"><b>1</b><span>个快捷键</span></div>
+            <div class="stat"><b>&lt; 2s</b><span>平均完成时间</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="use-cases section-shell" id="use-cases">
+        <div class="section-intro reveal"><span class="section-number">03 /</span><h2>小小一层，<br /><span>覆盖很多种工作。</span></h2></div>
+        <div class="case-masonry">
+          <article class="case-card case-blue reveal"><span class="case-tag">RESEARCH</span><h3>看懂论文里的<br />那一句话。</h3><p>遇到陌生概念，直接解释并补充上下文。</p><div class="case-quote">“把专业说得像人话。”</div></article>
+          <article class="case-card case-photo reveal delay-1"><div class="photo-lines"><span></span><span></span><span></span></div><span class="case-tag">WRITING</span><h3>让表达更像<br />你想说的。</h3><p>保持原意，重新找到准确的语气。</p></article>
+          <article class="case-card case-yellow reveal delay-2"><span class="case-tag">LANGUAGE</span><h3>阅读另一种<br />语言的世界。</h3><p>翻译、总结，再继续往下读。</p><div class="case-symbol">文 → A</div></article>
+        </div>
+      </section>
+
+      <section class="download section-shell" id="download">
+        <div class="download-inner reveal"><div><span class="section-number">READY WHEN YOU ARE</span><h2>让下一次选词，<br /><em>有一点不同。</em></h2><p>Omni for macOS · 轻量安装 · 连接你自己的模型</p></div><a class="button button-light" href="Omni-0.2.dmg" download="Omni-0.2.dmg">下载 Omni <span>↗</span></a></div>
+      </section>
+    </main>
+
+    <footer class="site-footer section-shell"><div class="brand"><span class="brand-mark">✦</span><span>OMNI</span></div><p>选中世界，留下更好的表达。</p><span>© 2026 Omni</span></footer>
+    <script src="script.js"></script>
+  </body>
+</html>

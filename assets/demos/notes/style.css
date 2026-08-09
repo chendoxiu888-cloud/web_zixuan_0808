@@ -1,0 +1,245 @@
+/* ============================================================
+   AI 研究笔记 · 文章排版样式
+   视觉语言与作品集主站一致：深色底 + 橙色点缀 #ef7427
+   ============================================================ */
+
+:root {
+  --orange: #ef7427;
+  --ink: #1a1a1a;
+  --paper: #ffffff;
+  --paper-soft: #f6f6f4;
+  --text: #23262b;
+  --text-soft: #5c6169;
+  --line: #e7e7e3;
+  --maxw: 760px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: "HarmonyOS Sans SC", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--paper);
+  line-height: 1.85;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 顶部导航 ---------- */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, .86);
+  backdrop-filter: saturate(160%) blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logo .mark {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+}
+
+.logo .brand {
+  font-weight: 800;
+  letter-spacing: .04em;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.logo .sub {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  padding-left: 9px;
+  margin-left: 3px;
+  border-left: 1px solid var(--line);
+}
+
+.main-nav {
+  display: flex;
+  gap: 22px;
+  margin-left: 8px;
+}
+
+.main-nav a {
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: color .2s ease;
+}
+
+.main-nav a:hover { color: var(--orange); }
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-right .search {
+  font-size: 14px;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.nav-right .cta {
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.nav-right .cta:hover { background: var(--orange); }
+
+/* ---------- 文章容器 ---------- */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+
+/* ---------- 标题区 ---------- */
+.article-head {
+  padding: 64px 0 26px;
+}
+
+.article-head h1 {
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.28;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 6px;
+  letter-spacing: -.01em;
+}
+
+.article-head .subtitle {
+  font-size: clamp(19px, 3vw, 25px);
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--orange);
+  margin: 0;
+}
+
+/* ---------- 导语框 ---------- */
+.intro-box {
+  background: var(--paper-soft);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 12px 12px 0;
+  padding: 22px 26px;
+  margin: 8px 0 40px;
+}
+
+.intro-box p {
+  margin: 0 0 12px;
+  color: var(--text-soft);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.intro-box p:last-child { margin-bottom: 0; }
+
+/* ---------- 正文 ---------- */
+.content h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 44px 0 14px;
+  padding-top: 6px;
+  letter-spacing: -.005em;
+}
+
+.content p {
+  margin: 0 0 20px;
+  text-indent: 2em;
+}
+
+.content p.no-indent { text-indent: 0; }
+
+/* 段首加粗小标题（"第一条，最直接的" 等以句号/逗号引导的强调）保持自然 */
+.content b { color: var(--ink); font-weight: 700; }
+
+/* ---------- 列表 ---------- */
+.article-list {
+  margin: 0 0 22px;
+  padding-left: 1.4em;
+}
+
+.article-list li {
+  margin: 0 0 12px;
+  line-height: 1.8;
+}
+
+.article-list li b { color: var(--ink); }
+
+/* ---------- 配图 ---------- */
+.article-img {
+  margin: 34px 0;
+  text-align: center;
+}
+
+.article-img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 配图缺失时的优雅占位：显示 alt 文案，而非裂图图标 */
+.article-img img {
+  min-height: 60px;
+  background: linear-gradient(135deg, #f2f2ef 0%, #eaeae6 100%);
+  color: var(--text-soft);
+  font-size: 13.5px;
+  line-height: 1.6;
+  position: relative;
+}
+
+/* ---------- 分隔线与来源 ---------- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 44px 0 22px;
+}
+
+.sources {
+  font-size: 13px;
+  color: #9a9ea5;
+  line-height: 1.7;
+  text-indent: 0;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .main-nav, .nav-right .search { display: none; }
+  .nav-inner { padding: 14px 18px; }
+  .article-head { padding: 40px 0 20px; }
+  .content h3 { font-size: 20px; margin-top: 36px; }
+  .intro-box { padding: 18px 20px; }
+}

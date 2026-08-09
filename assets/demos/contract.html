@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="星阑智能合同审查平台：让企业合同审查更快、更稳、更可沉淀。" />
+    <title>星阑 · 企业合同智能审查平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <style>
+      :root {
+        --navy:#0f1a36; --ink:#1a2340; --muted:#69748c; --muted-2:#8891a4;
+        --blue:#2563eb; --blue-dark:#1747c5; --blue-soft:#eef4ff; --blue-soft-2:#e3edff;
+        --line:#e8edf5; --line-soft:#f0f3f8; --paper:#fff; --wash:#f7faff;
+        --green:#139c6b; --red:#e44949; --amber:#d68916;
+        --app-top:#1f2632; --app-side:#fbfcfe; --app-bg:#f4f6fa;
+        --r-sm:10px; --r-md:14px; --r-lg:20px; --r-xl:28px;
+        --shadow-sm:0 10px 24px rgba(30,58,138,.08);
+        --shadow-md:0 20px 45px rgba(31,58,120,.12);
+        --shadow-lg:0 34px 80px rgba(28,52,110,.16);
+      }
+      * { box-sizing:border-box; }
+      html { scroll-behavior:smooth; }
+      body { margin:0; color:var(--ink); background:#fff; font-family:"Noto Sans SC","DM Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+      a { color:inherit; text-decoration:none; }
+      button { border:0; font:inherit; cursor:pointer; }
+      img, svg { display:block; }
+
+      /* ---------- Header ---------- */
+      .site-header { position:sticky; top:0; z-index:30; height:80px; display:flex; align-items:center; padding:0 clamp(20px,6vw,88px); border-bottom:1px solid rgba(232,237,245,.8); background:rgba(255,255,255,.86); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+      .brand { display:flex; align-items:center; gap:11px; font-size:19px; font-weight:800; letter-spacing:-.02em; }
+      .brand-mark { display:grid; place-items:center; width:34px; height:34px; color:#fff; border-radius:10px; background:linear-gradient(135deg,#2f71ff,#1747c5); box-shadow:0 10px 20px rgba(37,99,235,.28); }
+      .brand-mark svg { width:18px; height:18px; stroke-width:2.4; }
+      .brand-sub { color:#a3adc0; font-size:10px; font-weight:700; letter-spacing:.1em; padding-top:20px; margin-left:-3px; }
+      .nav-links { display:flex; align-items:center; gap:8px; margin-left:clamp(24px,6vw,72px); color:#48526a; font-size:14px; font-weight:500; }
+      .nav-links a { padding:10px 15px; border-radius:999px; transition:color .2s, background .2s; }
+      .nav-links a:hover { color:var(--blue); background:var(--blue-soft); }
+      .nav-chevron { width:14px; height:14px; vertical-align:-3px; margin-left:2px; }
+      .header-actions { display:flex; align-items:center; gap:22px; margin-left:auto; font-size:14px; }
+      .signin { color:#3d4760; font-weight:600; }
+      .signin:hover { color:var(--blue); }
+
+      .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:50px; padding:0 8px 0 22px; border-radius:999px; font-weight:700; font-size:14.5px; transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, background .25s; white-space:nowrap; }
+      .btn:hover { transform:translateY(-2px); }
+      .btn-primary { color:#fff; background:var(--blue); box-shadow:var(--shadow-sm); }
+      .btn-primary:hover { background:var(--blue-dark); box-shadow:var(--shadow-md); }
+      .btn-primary .btn-arrow { background:rgba(255,255,255,.18); }
+      .btn-arrow { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; margin-left:2px; }
+      .btn-arrow svg { width:16px; height:16px; }
+      .btn-text { gap:9px; padding:0; min-height:auto; color:var(--navy); font-size:14.5px; background:none; box-shadow:none; }
+      .btn-text .btn-arrow { width:30px; height:30px; background:var(--blue-soft); color:var(--blue); }
+      .btn-text:hover { transform:none; }
+      .btn-text:hover .btn-arrow { background:var(--blue); color:#fff; }
+      .mobile-toggle { display:none; width:42px; height:42px; background:transparent; color:var(--ink); border-radius:10px; }
+      .mobile-toggle:hover { background:var(--line-soft); }
+
+      /* ---------- Hero ---------- */
+      .hero { position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; text-align:center; padding:120px clamp(20px,6vw,88px) 124px; background:#fff; }
+      .hero-blob { position:absolute; z-index:0; border-radius:50%; }
+      .hero-blob.a { width:720px; height:720px; right:-240px; top:-160px; background:radial-gradient(circle at 32% 30%, #e7efff 0%, #f6f9ff 55%, rgba(255,255,255,0) 75%); }
+      .hero-blob.b { width:320px; height:320px; left:-120px; bottom:-120px; background:radial-gradient(circle at 40% 40%, #dbe8ff 0%, rgba(219,232,255,0) 70%); }
+      .hero-dots { position:absolute; z-index:0; right:60px; top:90px; width:340px; height:200px; pointer-events:none; opacity:.7; }
+      .hero-copy { position:relative; z-index:1; width:100%; max-width:860px; margin:0 auto; display:flex; flex-direction:column; align-items:center; }
+      .new-badge { display:inline-flex; align-items:center; gap:10px; padding:6px 16px 6px 6px; border-radius:999px; background:#fff; border:1px solid var(--line); box-shadow:var(--shadow-sm); font-size:12.5px; font-weight:600; color:#4c5670; }
+      .new-badge b { padding:4px 9px; border-radius:999px; background:var(--blue); color:#fff; font-size:10.5px; font-weight:800; letter-spacing:.03em; }
+      .new-badge svg { width:14px; height:14px; color:var(--blue); }
+
+      h1 { max-width:100%; margin:28px 0 22px; color:var(--navy); font-size:clamp(38px,4.4vw,58px); line-height:1.16; letter-spacing:-.02em; font-weight:800; }
+      h1 span { color:var(--blue); }
+      .hero-lead { max-width:640px; margin:0 auto; color:var(--muted); font-size:16.5px; line-height:1.85; }
+      .hero-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:26px; margin-top:38px; }
+      .hero-proof { display:flex; flex-wrap:wrap; justify-content:center; gap:28px; margin-top:40px; color:#7b859a; font-size:13px; }
+      .proof-item { display:flex; align-items:center; gap:8px; font-weight:500; }
+      .proof-item svg { width:16px; height:16px; color:var(--blue); stroke-width:2.5; }
+
+      .gem { position:absolute; left:6px; bottom:56px; width:52px; height:52px; z-index:2; filter:drop-shadow(0 14px 20px rgba(37,99,235,.28)); }
+
+      .appwin { position:relative; width:min(650px,100%); margin-left:auto; border:1px solid #232b3a; border-radius:var(--r-xl); background:#fff; box-shadow:var(--shadow-lg); overflow:hidden; transform:rotate(-1.6deg); }
+      .app-top { display:flex; align-items:center; gap:10px; height:42px; padding:0 16px; background:var(--app-top); color:#fff; }
+      .app-top .dot-circle { width:9px; height:9px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#fff,#c7d2e6); }
+      .app-top b { font-size:11.5px; font-weight:700; margin-left:2px; }
+      .app-top .env { margin-left:8px; padding:3px 9px; border:1px solid #3a4a63; border-radius:999px; color:#9fb4d8; font-size:9.5px; }
+      .app-top .app-top-r { margin-left:auto; display:flex; align-items:center; gap:12px; color:#c8cfdd; }
+      .app-top .app-top-r svg { width:13px; height:13px; }
+      .app-layout { display:grid; grid-template-columns:150px 1fr; min-height:372px; }
+      .app-side { padding:18px 10px; border-right:1px solid var(--line); background:var(--app-side); }
+      .app-nav { display:flex; align-items:center; gap:9px; height:38px; padding:0 12px; border-radius:0; border-left:3px solid transparent; color:#606a7e; font-size:12px; font-weight:500; }
+      .app-nav svg { width:14px; height:14px; opacity:.8; }
+      .app-nav.active { color:var(--blue); background:var(--blue-soft); border-left-color:var(--blue); font-weight:700; }
+      .app-nav.active svg { opacity:1; }
+      .app-main { padding:20px 22px 22px; background:#fff; }
+      .app-title-row { display:flex; align-items:start; justify-content:space-between; gap:14px; }
+      .app-title { color:var(--navy); font-size:17px; font-weight:800; }
+      .app-title small { display:block; margin-top:4px; color:#9ba6b8; font-size:11px; font-weight:500; }
+      .app-btn { flex:none; height:32px; padding:0 15px; border-radius:6px; color:#fff; background:var(--blue); font-size:12px; font-weight:700; box-shadow:0 8px 16px rgba(37,99,235,.22); }
+      .app-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:20px; }
+      .app-kpi { padding:12px 13px; border:1px solid #edf1f6; border-radius:11px; }
+      .app-kpi span.n { display:block; color:var(--navy); font-size:19px; font-weight:800; letter-spacing:-.01em; }
+      .app-kpi span.l { display:block; margin-top:4px; color:#9aa5b7; font-size:10px; }
+      .app-columns { display:grid; grid-template-columns:1.05fr .95fr; gap:12px; margin-top:14px; }
+      .app-card { padding:14px 15px; border:1px solid #edf1f6; border-radius:11px; }
+      .app-card-head { display:flex; justify-content:space-between; margin-bottom:11px; color:var(--navy); font-size:11.5px; font-weight:700; }
+      .app-card-head span { color:#a0aabc; font-size:10px; font-weight:500; }
+      .app-chart { display:flex; align-items:end; gap:5px; height:66px; padding:0 4px 4px; border-bottom:1px solid #e9eef7; }
+      .app-bar { flex:1; border-radius:4px 4px 0 0; background:#dce8ff; }
+      .app-bar.active { background:var(--blue); }
+      .app-activity { display:grid; gap:11px; }
+      .app-activity-row { display:flex; align-items:center; gap:9px; color:#67738b; font-size:11px; font-weight:500; }
+      .app-activity-dot { width:20px; height:20px; display:grid; place-items:center; color:var(--blue); border-radius:50%; background:#eff5ff; }
+      .app-activity-dot svg { width:10px; height:10px; }
+      .app-activity-row span { margin-left:auto; color:#a4aebe; font-size:9.5px; }
+      .app-pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9.5px; font-weight:700; }
+      .app-pill.amber { color:#98630d; background:#fff8e8; }
+      .app-pill.red { color:#a73535; background:#fff0f0; }
+
+      .floating-card { position:absolute; left:-30px; bottom:70px; z-index:2; display:flex; align-items:center; gap:11px; padding:14px 16px; border:1px solid #e6edf8; border-radius:var(--r-md); background:#fff; box-shadow:var(--shadow-md); }
+      .floating-card-icon { width:32px; height:32px; display:grid; place-items:center; color:#fff; border-radius:9px; background:var(--amber); }
+      .floating-card-icon svg { width:15px; height:15px; }
+      .floating-card b { display:block; color:var(--navy); font-size:13.5px; }
+      .floating-card span { display:block; color:#99a4b7; font-size:10px; margin-top:2px; }
+
+      /* ---------- Hero device mockup (laptop + phone) ---------- */
+      .laptop-shell { position:relative; width:min(650px,100%); margin-left:auto; padding:13px 13px 0; border-radius:24px 24px 8px 8px; background:linear-gradient(180deg,#2a3140,#161b25); box-shadow:var(--shadow-lg); transform:rotate(-1.6deg); }
+      .laptop-cam { position:absolute; left:50%; top:6px; transform:translateX(-50%); width:6px; height:6px; border-radius:50%; background:#454e60; z-index:1; }
+      .laptop-shell .appwin { position:relative; width:100%; margin-left:0; border:0; border-radius:9px 9px 0 0; box-shadow:none; transform:none; overflow:hidden; }
+      .laptop-base { height:17px; margin:0 -7px; background:linear-gradient(180deg,#e2e7f0,#aab3c8); border-radius:0 0 16px 16px; box-shadow:0 16px 24px rgba(18,28,58,.28); position:relative; }
+      .laptop-base:before { content:""; position:absolute; left:50%; top:0; transform:translateX(-50%); width:96px; height:6px; background:#95a1ba; border-radius:0 0 8px 8px; }
+      .phone-mini { position:absolute; right:-6px; bottom:-150px; z-index:3; width:150px; padding:9px 7px 12px; border-radius:28px; background:#1a2029; box-shadow:var(--shadow-md); }
+      .phone-notch { width:42px; height:5px; margin:0 auto 8px; border-radius:4px; background:#000; opacity:.5; }
+      .phone-screen { border-radius:18px; background:#fff; padding:12px 10px 14px; }
+      .phone-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }
+      .phone-head b { color:var(--navy); font-size:12px; font-weight:800; }
+      .phone-add { padding:3px 7px; border-radius:999px; color:#fff; background:var(--blue); font-size:8px; font-weight:700; white-space:nowrap; }
+      .rule-card { display:flex; align-items:center; gap:6px; padding:7px 0; border-top:1px solid var(--line-soft); }
+      .rule-card:first-of-type { border-top:0; }
+      .rule-info { flex:1; min-width:0; }
+      .rule-info b { display:block; color:var(--ink); font-size:9px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .rule-info span { display:block; color:#a4aebe; font-size:7.5px; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .rule-count { flex:none; color:#9aa5b7; font-size:8px; font-weight:600; }
+      .toggle { flex:none; width:22px; height:12px; border-radius:999px; background:#dfe4ee; position:relative; }
+      .toggle:after { content:""; position:absolute; top:1.5px; left:1.5px; width:9px; height:9px; border-radius:50%; background:#fff; transition:.2s; }
+      .toggle.on { background:var(--blue); }
+      .toggle.on:after { left:11.5px; }
+
+      /* ---------- App topbar bell/user (shared) ---------- */
+      .bell-wrap { position:relative; display:grid; place-items:center; }
+      .bell-wrap .bell-dot { position:absolute; top:-1px; right:-1px; width:6px; height:6px; border-radius:50%; background:var(--red); border:1.5px solid var(--app-top); }
+      .user-name { font-size:10.5px; color:#dfe4ee; font-weight:600; }
+
+      /* ---------- Shared app-shell page title (used by list / compare / opinions mockups) ---------- */
+      .app-page-title { color:var(--navy); font-size:15px; font-weight:800; margin-bottom:10px; }
+
+      /* ---------- Contract list page (合同审查) ---------- */
+      .list-tabs { display:flex; gap:18px; margin-bottom:11px; color:#8290a5; font-size:10.5px; font-weight:600; border-bottom:1px solid var(--line); }
+      .list-tabs span { padding-bottom:8px; }
+      .list-tabs .on { color:var(--blue); font-weight:700; border-bottom:2px solid var(--blue); }
+      .list-filters { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+      .lf { display:flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid var(--line); border-radius:8px; color:#69748c; font-size:9.5px; background:#fff; }
+      .lf b { color:var(--ink); font-weight:600; }
+      .lf-btn { padding:7px 14px; border-radius:8px; color:#fff; background:var(--blue); font-size:9.5px; font-weight:700; }
+      .list-upload { margin-bottom:10px; }
+      .ct-table { display:grid; }
+      .ct-row { display:grid; grid-template-columns:1.7fr .9fr .8fr .6fr .8fr; align-items:center; gap:6px; padding:8px 0; border-top:1px solid var(--line-soft); font-size:9.5px; color:var(--ink); }
+      .ct-row.head { color:#9aa5b7; font-size:9px; font-weight:700; border-top:0; padding-bottom:6px; }
+      .ct-row:not(.head):first-of-type { border-top:1px solid var(--line-soft); }
+      .ct-row span:first-child { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .ct-status { display:flex; align-items:center; gap:5px; }
+      .ct-dot { width:6px; height:6px; border-radius:50%; flex:none; }
+      .ct-dot.blue { background:var(--blue); }
+      .ct-dot.green { background:var(--green); }
+      .ct-dot.amber { background:var(--amber); }
+      .ct-dot.red { background:var(--red); }
+
+      /* ---------- Logo strip ---------- */
+      .logo-strip-wrap { padding:34px clamp(20px,6vw,88px); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); }
+      .logo-strip-label { text-align:center; margin:0 0 22px; color:#a3adbc; font-size:11.5px; font-weight:700; letter-spacing:.14em; }
+      .logo-strip { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:clamp(28px,6vw,64px); color:#9aa4b6; font-size:14px; font-weight:700; }
+      .logo-strip span { display:flex; align-items:center; gap:8px; opacity:.85; }
+      .logo-strip span svg { width:16px; height:16px; }
+
+      /* ---------- Sections ---------- */
+      .section { padding:112px clamp(20px,6vw,88px); }
+      .section.center { text-align:center; }
+      .section-head { max-width:640px; margin:0 auto 56px; }
+      .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:8px 16px 8px 8px; border-radius:999px; background:var(--blue-soft); color:var(--blue-dark); font-size:12px; font-weight:700; letter-spacing:.04em; }
+      .eyebrow i { display:grid; place-items:center; width:20px; height:20px; border-radius:999px; background:var(--blue); color:#fff; }
+      .eyebrow i svg { width:11px; height:11px; stroke-width:3; }
+      .eyebrow.on-dark { background:rgba(255,255,255,.1); color:#cfe0ff; }
+      .eyebrow.on-dark i { background:#4f86ff; }
+      .section-head .eyebrow { margin-bottom:2px; }
+      .section h2 { margin:18px 0 15px; color:var(--navy); font-size:clamp(28px,3.4vw,42px); line-height:1.24; letter-spacing:-.02em; font-weight:800; }
+      .section h2 span { color:var(--blue); }
+      .section-desc { margin:0; color:var(--muted); font-size:16px; line-height:1.85; }
+
+      .feature-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; max-width:1160px; margin:0 auto; }
+      .feature-card { min-height:212px; padding:28px 26px; border:1px solid var(--line); border-radius:var(--r-lg); background:#fff; text-align:left; transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s; }
+      .feature-card:hover { transform:translateY(-6px); border-color:#cbdcff; box-shadow:var(--shadow-md); }
+      .feature-icon { width:44px; height:44px; display:grid; place-items:center; color:var(--blue); border-radius:13px; background:var(--blue-soft); }
+      .feature-icon svg { width:21px; height:21px; }
+      .feature-card h3 { margin:20px 0 9px; color:var(--navy); font-size:16.5px; font-weight:700; letter-spacing:-.01em; }
+      .feature-card p { margin:0; color:var(--muted); font-size:13.3px; line-height:1.8; }
+      .feature-link { display:inline-flex; align-items:center; gap:6px; margin-top:16px; color:var(--blue); font-size:13px; font-weight:700; }
+      .feature-link svg { width:15px; height:15px; transition:transform .2s; }
+      .feature-link:hover svg { transform:translateX(3px); }
+
+      .product-section { background:var(--wash); }
+      .product-wrap { display:grid; grid-template-columns:.85fr 1.15fr; gap:76px; align-items:center; max-width:1200px; margin:0 auto; }
+      .product-wrap.reverse { grid-template-columns:1.15fr .85fr; }
+      .product-wrap.reverse .product-copy { order:2; }
+      .product-wrap.reverse .product-visual { order:1; }
+      .product-copy h2 { max-width:440px; text-align:left; }
+      .product-copy .section-desc { max-width:460px; }
+      .product-points { display:grid; gap:16px; margin:28px 0 34px; }
+      .product-point { display:flex; align-items:start; gap:12px; color:#4c5670; font-size:14.5px; line-height:1.7; }
+      .product-point i { display:grid; place-items:center; flex:none; width:24px; height:24px; margin-top:1px; border-radius:50%; background:var(--blue-soft); color:var(--blue); }
+      .product-point i svg { width:14px; height:14px; }
+
+      /* review workbench mock */
+      .review-shell { border:1px solid #dfe6f2; border-radius:var(--r-xl); background:#fff; box-shadow:var(--shadow-lg); overflow:hidden; }
+      .review-top { display:flex; align-items:center; gap:10px; height:50px; padding:0 18px; background:var(--app-top); color:#c8cfdd; }
+      .review-top .dot-circle { width:8px; height:8px; border-radius:50%; background:#3a4358; }
+      .review-top .dot-circle.blue { background:#5a8dff; }
+      .review-top b { margin-left:6px; color:#fff; font-size:12px; font-weight:700; }
+      .review-top span { margin-left:auto; padding:5px 10px; color:#cfe0ff; border-radius:999px; background:rgba(255,255,255,.1); font-size:10.5px; font-weight:700; }
+      .review-body { display:grid; grid-template-columns:128px 1fr 230px; min-height:360px; }
+      .review-nav { padding:16px 9px; border-right:1px solid var(--line); background:var(--app-side); }
+      .review-nav-label { color:#a6afbf; font-size:9.5px; font-weight:700; letter-spacing:.05em; padding:5px 9px 9px; }
+      .review-nav-item { padding:9px; border-radius:7px; color:#78859a; font-size:11.5px; font-weight:500; margin-bottom:2px; }
+      .review-nav-item.current { color:var(--blue); background:var(--blue-soft); font-weight:700; }
+      .review-document { padding:18px 20px; }
+      .review-document h4 { margin:0 0 10px; color:var(--navy); font-size:12.5px; font-weight:700; }
+      .review-document h4:not(:first-child) { margin-top:16px; }
+      .review-document p { margin:0; padding:11px 13px; color:#5c6880; border:1px solid #edf0f5; border-radius:9px; background:#fff; font-family:"Noto Serif SC",serif; font-size:12px; line-height:1.85; }
+      .mk { border-bottom:2px solid; padding:0 2px 1px; font-weight:600; border-radius:3px; }
+      .mk.r { border-color:#eb6767; color:#a73535; background:#fff0f0; }
+      .mk.a { border-color:#efb350; color:#8b5a0b; background:#fff8e8; }
+      .review-side { border-left:1px solid var(--line); background:var(--app-side); }
+      .review-side-head { padding:15px 15px 13px; border-bottom:1px solid var(--line); color:var(--navy); font-size:12px; font-weight:800; }
+      .risk-card { padding:14px 15px; border-bottom:1px solid var(--line); }
+      .risk-card-head { display:flex; align-items:center; gap:8px; color:var(--navy); font-size:11.5px; font-weight:700; }
+      .risk-pill { padding:3px 8px; border-radius:999px; color:#a73535; background:#fff0f0; font-size:9.5px; font-weight:700; }
+      .risk-pill.amber { color:#98630d; background:#fff8e8; }
+      .risk-card p { margin:8px 0 0; color:#8994a8; font-size:11px; line-height:1.75; }
+      .risk-card a { display:inline-flex; align-items:center; gap:4px; margin-top:9px; color:var(--blue); font-size:11px; font-weight:700; }
+      .risk-card a svg { width:12px; height:12px; }
+
+      /* version-compare mockup (full app-shell matching 版本对比 screenshot) */
+      .compare-main { padding:16px 18px 18px; }
+      .compare-selectors { display:grid; grid-template-columns:1fr auto 1fr auto; align-items:center; gap:8px; }
+      .compare-select { display:flex; align-items:center; gap:5px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--navy); font-size:9.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .compare-select svg { flex:none; width:10px; height:10px; color:#9aa5b7; margin-left:auto; }
+      .compare-vs { color:#9aa5b7; font-size:9.5px; font-weight:700; }
+      .compare-go { flex:none; padding:7px 12px; border-radius:8px; color:#fff; background:var(--blue); font-size:9.5px; font-weight:700; white-space:nowrap; }
+      .compare-meta { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line-soft); }
+      .compare-meta div { color:#9aa5b7; font-size:8.5px; line-height:1.7; }
+      .compare-meta b { color:var(--ink); font-weight:700; }
+      .compare-status { margin-top:6px; color:#9aa5b7; font-size:8.5px; }
+      .compare-alert { display:flex; align-items:start; gap:6px; margin-top:10px; padding:9px 10px; border-radius:8px; color:#8b5a0b; background:#fff8e8; font-size:9.5px; line-height:1.6; }
+      .compare-alert svg { flex:none; width:12px; height:12px; margin-top:1px; }
+      .compare-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+      .compare-col-head { color:var(--navy); font-size:9.5px; font-weight:700; margin-bottom:7px; }
+      .compare-row { padding:6px 8px; margin-bottom:5px; border-radius:6px; color:#5c6880; font-size:9px; line-height:1.5; background:#f7f9fc; }
+      .compare-row.old { color:#a73535; background:#fff0f0; }
+      .compare-row.new { color:#1b7a4d; background:#eaf7ee; }
+      .compare-row .tag { display:inline-block; margin-left:4px; padding:1px 6px; border-radius:999px; font-size:7.5px; font-weight:700; vertical-align:1px; }
+      .compare-row .tag.amber { color:#98630d; background:#fff8e8; }
+      .compare-row .tag.red { color:#a73535; background:#fde3e3; }
+
+      /* opinions list page (审核意见) */
+      .opinion-tabs { display:flex; gap:16px; margin-bottom:9px; color:#8290a5; font-size:10.5px; font-weight:600; border-bottom:1px solid var(--line); }
+      .opinion-tabs span { padding-bottom:8px; }
+      .opinion-tabs .on { color:var(--blue); font-weight:700; border-bottom:2px solid var(--blue); }
+      .opinion-filters { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+      .opinion-count { margin-left:auto; color:#9aa5b7; font-size:9.5px; font-weight:600; }
+
+      /* reminders showcase (second product-style section) */
+      .rem-shell { border:1px solid #dfe6f2; border-radius:var(--r-xl); background:#fff; box-shadow:var(--shadow-lg); overflow:hidden; }
+      .rem-tabs { display:flex; align-items:center; gap:22px; height:50px; padding:0 20px; border-bottom:1px solid var(--line); color:#8290a5; font-size:12px; }
+      .rem-tabs .on { color:var(--blue); font-weight:700; }
+      .rem-tabs .expand { margin-left:auto; color:#9aa5b7; font-weight:600; font-size:11px; }
+      .rem-tabs .expand svg { width:15px; height:15px; }
+      .rem-body { padding:20px 22px; }
+      .rem-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+      .rem-kpi { padding:14px 16px; border:1px solid var(--line); border-radius:12px; }
+      .rem-kpi .n { font-size:24px; font-weight:800; letter-spacing:-.02em; }
+      .rem-kpi .l { margin-top:4px; color:#9aa5b7; font-size:11px; }
+      .rem-lists { display:grid; grid-template-columns:1.3fr 1fr; gap:14px; margin-top:16px; }
+      .rem-list-head { display:flex; justify-content:space-between; color:var(--navy); font-size:12px; font-weight:700; margin-bottom:10px; }
+      .rem-list-head span { color:var(--blue); font-size:10.5px; font-weight:600; }
+      .rem-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line-soft); font-size:11.5px; }
+      .rem-row:first-of-type { border-top:0; }
+      .rem-row .rtitle { flex:1; min-width:0; }
+      .rem-row .rtitle b { display:block; color:var(--ink); font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .rem-row .rtitle span { display:block; color:#9aa5b7; font-size:10px; margin-top:2px; }
+      .rem-row .rpill { flex:none; padding:4px 9px; border-radius:999px; font-size:10px; font-weight:700; }
+      .rem-avatar { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; background:var(--blue-soft); color:var(--blue); font-size:9.5px; font-weight:800; flex:none; }
+      .rem-activity-row { display:flex; align-items:start; gap:9px; padding:9px 0; border-top:1px solid var(--line-soft); font-size:11px; }
+      .rem-activity-row:first-of-type { border-top:0; }
+      .rem-activity-dot { width:7px; height:7px; margin-top:5px; border-radius:50%; background:var(--green); flex:none; }
+      .rem-activity-row div b { display:block; color:var(--ink); font-size:11.5px; font-weight:600; }
+      .rem-activity-row div span { color:#9aa5b7; font-size:10px; }
+      .filter-tag { padding:5px 11px; border:1px solid var(--line); border-radius:999px; color:#69748c; font-size:10.5px; font-weight:600; }
+      .rem-tabs .filter-tag { margin-left:10px; }
+      .opinion-table { display:grid; gap:2px; }
+      .opinion-row { display:grid; grid-template-columns:1.6fr .6fr .9fr .6fr .8fr .5fr; align-items:center; gap:6px; padding:9px 4px; border-top:1px solid var(--line-soft); font-size:9.5px; color:var(--ink); }
+      .opinion-link { color:var(--blue); font-weight:700; }
+      .opinion-row:first-child { border-top:0; }
+      .opinion-row.head { color:#9aa5b7; font-size:9px; font-weight:700; padding-bottom:7px; }
+      .opinion-row span:first-child { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .opinion-risk { display:inline-flex; justify-content:center; padding:2px 8px; border-radius:999px; font-size:8.5px; font-weight:700; width:fit-content; }
+      .opinion-risk.high { color:#a73535; background:#fff0f0; }
+      .opinion-risk.mid { color:#98630d; background:#fff8e8; }
+      .opinion-risk.low { color:#139c6b; background:#e8f7f0; }
+
+      .metric-grid { display:grid; grid-template-columns:repeat(3,1fr); max-width:900px; margin:0 auto; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+      .metric { padding:32px 20px; text-align:center; }
+      .metric + .metric { border-left:1px solid var(--line); }
+      .metric strong { display:block; color:var(--blue); font-size:44px; letter-spacing:-.03em; font-weight:800; }
+      .metric span { display:block; margin-top:7px; color:#77839a; font-size:13px; font-weight:500; }
+
+      .cta { position:relative; overflow:hidden; padding:100px 20px; text-align:center; background:var(--navy); }
+      .cta:before { content:""; position:absolute; width:520px; height:520px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(79,134,255,.16) 0%, rgba(79,134,255,0) 70%); }
+      .cta > * { position:relative; z-index:1; }
+      .cta h2 { margin:18px auto 15px; color:#fff; font-size:clamp(30px,3.6vw,44px); letter-spacing:-.02em; font-weight:800; }
+      .cta p { max-width:520px; margin:0 auto; color:#aab7d1; font-size:16px; line-height:1.85; }
+      .cta .btn { margin-top:32px; }
+
+      .footer { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:32px clamp(20px,6vw,88px); color:#8d99af; font-size:12.5px; background:#0b1329; }
+      .footer .brand { color:#fff; font-size:15px; }
+      .footer .brand-mark { box-shadow:none; }
+      .footer-links { display:flex; gap:26px; }
+      .footer-links a:hover { color:#fff; }
+
+      .toast { position:fixed; left:50%; bottom:30px; z-index:70; display:flex; align-items:center; gap:10px; padding:14px 20px; color:#fff; border-radius:999px; background:var(--navy); box-shadow:0 20px 40px rgba(9,18,45,.3); transform:translate(-50%,20px); opacity:0; pointer-events:none; transition:.3s cubic-bezier(.2,.8,.2,1); font-size:13.5px; font-weight:500; }
+      .toast.show { transform:translate(-50%,0); opacity:1; }
+      .toast svg { width:17px; height:17px; color:#7cabff; }
+
+      .modal-backdrop { position:fixed; inset:0; z-index:60; display:none; place-items:center; padding:20px; background:rgba(10,18,43,.5); backdrop-filter:blur(4px); }
+      .modal-backdrop.open { display:grid; }
+      .modal { position:relative; width:min(600px,100%); padding:38px; border-radius:var(--r-xl); background:#fff; box-shadow:0 30px 80px rgba(8,19,49,.3); }
+      .modal h3 { margin:0 0 11px; color:var(--navy); font-size:23px; font-weight:800; letter-spacing:-.01em; }
+      .modal p { margin:0; color:var(--muted); font-size:13.5px; line-height:1.8; }
+      .modal-close { position:absolute; top:16px; right:16px; width:34px; height:34px; display:grid; place-items:center; color:#6e7a90; border-radius:9px; background:#f4f7fb; }
+      .modal-close:hover { background:#e9eef7; }
+      .modal-close svg { width:16px; height:16px; }
+      .modal-steps { display:grid; gap:12px; margin:26px 0; }
+      .modal-step { display:flex; align-items:center; gap:14px; padding:14px; border:1px solid var(--line); border-radius:var(--r-md); color:#4c5670; font-size:13px; line-height:1.7; }
+      .modal-step b { color:var(--navy); }
+      .modal-step span { display:grid; place-items:center; flex:none; width:28px; height:28px; color:var(--blue); border-radius:9px; background:var(--blue-soft); font-weight:800; font-size:13px; }
+
+      @media (max-width: 980px) {
+        .hero { padding-top:80px; padding-bottom:88px; }
+        h1 { margin-left:auto; margin-right:auto; }
+        .product-wrap, .product-wrap.reverse { grid-template-columns:1fr; gap:48px; }
+        .product-wrap.reverse .product-copy, .product-wrap.reverse .product-visual { order:initial; }
+        .product-copy { text-align:center; }
+        .product-copy h2, .product-copy .section-desc { margin-left:auto; margin-right:auto; text-align:center; }
+        .product-points { max-width:470px; margin-left:auto; margin-right:auto; text-align:left; }
+        .rem-lists { grid-template-columns:1fr; }
+      }
+      @media (max-width: 760px) {
+        .site-header { height:66px; }
+        .brand-sub { display:none; }
+        .nav-links, .header-actions { display:none; }
+        .mobile-toggle { display:grid; place-items:center; margin-left:auto; }
+        .mobile-open .nav-links { position:absolute; left:0; right:0; top:66px; display:flex; flex-direction:column; align-items:flex-start; gap:0; padding:12px 20px 18px; margin:0; border-bottom:1px solid var(--line); background:#fff; box-shadow:0 16px 30px rgba(23,42,85,.08); }
+        .mobile-open .nav-links a { width:100%; padding:13px 15px; }
+        h1 { font-size:34px; }
+        .hero { min-height:auto; padding:64px 20px 72px; }
+        .appwin { transform:none; }
+        .laptop-shell { transform:none; }
+        .floating-card { left:10px; bottom:74px; }
+        .phone-mini { display:none; }
+        .feature-grid { grid-template-columns:1fr; max-width:500px; }
+        .section { padding:76px 20px; }
+        .review-body { grid-template-columns:100px 1fr; }
+        .review-side { display:none; }
+        .review-document { padding:16px; }
+        .rem-kpis { grid-template-columns:1fr; }
+        .metric-grid { grid-template-columns:1fr; max-width:300px; }
+        .metric + .metric { border-left:0; border-top:1px solid var(--line); }
+        .footer { flex-direction:column; align-items:flex-start; }
+      }
+      @media (max-width: 460px) {
+        .hero-actions .btn { width:100%; }
+        .app-layout { grid-template-columns:1fr; }
+        .app-side { display:none; }
+        .app-main { padding:14px; }
+        .app-kpis { grid-template-columns:repeat(2,1fr); }
+        .app-columns { grid-template-columns:1fr; }
+        .app-card:last-child { display:none; }
+        .review-body { grid-template-columns:1fr; }
+        .review-nav { display:none; }
+        .footer-links { gap:16px; flex-wrap:wrap; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <a class="brand" href="#top" aria-label="星阑合同平台首页"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>星阑</span><span class="brand-sub">CONTRACT INTELLIGENCE</span></a>
+      <nav class="nav-links" aria-label="主导航"><a href="#product">产品</a><a href="#features">能力</a><a href="#workflow">解决方案 <i class="nav-chevron" data-lucide="chevron-down"></i></a><a href="#impact">实践成效</a></nav>
+      <div class="header-actions"><a class="signin" href="#contact">登录</a><button class="btn btn-primary" data-action="demo">预约产品演示<span class="btn-arrow"><i data-lucide="arrow-up-right"></i></span></button></div>
+      <button class="mobile-toggle" aria-label="打开菜单"><i data-lucide="menu"></i></button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-blob a"></div>
+        <div class="hero-blob b"></div>
+        <div class="hero-copy">
+          <div class="new-badge"><b>NEW</b>星阑 2.0 全新升级 <i data-lucide="chevron-right"></i></div>
+          <h1>让每一份合同<br />都值得被<span>认真审查</span></h1>
+          <p class="hero-lead">星阑将 LLM、企业知识库、OCR 与规则引擎融入一体化审查工作台，帮助法务快速识别风险、沉淀标准、把控履约。</p>
+          <div class="hero-actions"><button class="btn btn-primary" data-action="demo">开始体验<span class="btn-arrow"><i data-lucide="arrow-right"></i></span></button><button class="btn btn-text" data-action="preview"><span class="btn-arrow"><i data-lucide="play"></i></span>观看产品演示</button></div>
+          <div class="hero-proof"><span class="proof-item"><i data-lucide="check-circle-2"></i>内网部署更安心</span><span class="proof-item"><i data-lucide="check-circle-2"></i>覆盖 5+ 高频场景</span><span class="proof-item"><i data-lucide="check-circle-2"></i>AI 初审 · 人工终审</span></div>
+        </div>
+        
+      </section>
+
+      <div class="logo-strip-wrap">
+        <p class="logo-strip-label">TRUSTED BY LEGAL &amp; OPERATIONS TEAMS</p>
+        <div class="logo-strip">
+          <span><i data-lucide="scale"></i>法务团队</span>
+          <span><i data-lucide="shopping-cart"></i>采购中心</span>
+          <span><i data-lucide="trending-up"></i>销售运营</span>
+          <span><i data-lucide="headset"></i>服务交付</span>
+          <span><i data-lucide="building-2"></i>企业管理</span>
+        </div>
+      </div>
+
+      <section class="section center" id="features">
+        <div class="section-head">
+          <div class="eyebrow"><i data-lucide="layers"></i>Built for Legal Teams</div>
+          <h2>一套平台，覆盖合同审查的<br /><span>每一个关键环节</span></h2>
+          <p class="section-desc">从文件进入系统，到风险被识别、意见被确认、履约被跟进，星阑让审查流程有迹可循，让专业标准可持续复用。</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="scan-text"></i></div><h3>智能解析与 OCR 人工确认</h3><p>文本与扫描件解析结合，低置信度文字会逐条标注并等待人工确认，不会被静默采纳带入审查。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="shield-check"></i></div><h3>AI 风险识别与红线分级</h3><p>结合企业标准立场与红线规则，识别自动续约、责任限制、付款等关键风险，高风险自动转入终审。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="clipboard-check"></i></div><h3>审核意见一键生成与导出</h3><p>AI 输出结构化审核意见草稿，支持采纳、修改、忽略并保留人工决策，一键导出 Word 或复制为邮件。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="git-compare-arrows"></i></div><h3>版本对比锁定隐性变更</h3><p>逐条比对新旧版本，把“和去年一样”这类隐性变更找出来，直接对接红线规则完成复核。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="calendar-clock"></i></div><h3>履约节点智能提醒</h3><p>自动续约、付款、验收等关键节点提前分级预警，逾期未处理自动升级至法务负责人。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+          <article class="feature-card"><div class="feature-icon"><i data-lucide="sliders-horizontal"></i></div><h3>规则与模板库自助维护</h3><p>法务可自主维护标准立场与红线规则，内置采购、服务、保密协议等标准模板，持续沉淀为企业资产。</p><a class="feature-link" href="#product">了解更多 <i data-lucide="arrow-right"></i></a></article>
+        </div>
+      </section>
+
+      <section class="section product-section" id="product">
+        <div class="product-wrap">
+          <div class="product-copy">
+            <div class="eyebrow"><i data-lucide="layout-panel-left"></i>The Review Workspace</div>
+            <h2>从 AI 初审，到<br /><span>法务终审</span></h2>
+            <p class="section-desc">把 AI 的速度和法务的判断放在同一个工作台里。每一项风险都有原文依据，每一次修改都能被记录。</p>
+            <div class="product-points">
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>对风险条款进行高 / 中 / 低分级，优先处理真正重要的问题。</span></div>
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>查看命中的标准立场和判断依据，减少"为什么这样判断"的黑盒感。</span></div>
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>支持采纳、修改、忽略并生成审核意见，红线被忽略将自动转法务经理终审。</span></div>
+            </div>
+            <button class="btn btn-primary" data-action="preview">查看审查工作台<span class="btn-arrow"><i data-lucide="arrow-right"></i></span></button>
+          </div>
+          <div class="review-shell" aria-label="版本对比预览">
+            <div class="app-top">
+              <span class="dot-circle"></span>
+              <b>星阑智能合同审查平台</b>
+              <span class="env">内网部署 · 数据不出域</span>
+              <div class="app-top-r"><span class="bell-wrap"><i data-lucide="bell"></i><i class="bell-dot"></i></span><i data-lucide="user-circle"></i><span class="user-name">李明</span></div>
+            </div>
+            <div class="app-layout">
+              <aside class="app-side">
+                <div class="app-nav"><i data-lucide="file-check-2"></i>合同审查</div>
+                <div class="app-nav"><i data-lucide="clipboard-check"></i>审核意见</div>
+                <div class="app-nav active"><i data-lucide="git-compare"></i>版本对比</div>
+                <div class="app-nav"><i data-lucide="calendar-clock"></i>履约提醒</div>
+                <div class="app-nav"><i data-lucide="sliders-horizontal"></i>规则管理</div>
+              </aside>
+              <div class="app-main compare-main">
+                <div class="app-page-title">版本对比</div>
+                <div class="compare-selectors">
+                  <div class="compare-select">云策数据订购单(2026)<svg data-lucide="chevron-down"></svg></div>
+                  <span class="compare-vs">对比</span>
+                  <div class="compare-select">SaaS 订购单标准模板<svg data-lucide="chevron-down"></svg></div>
+                  <button class="compare-go">开始对比</button>
+                </div>
+                <div class="compare-meta">
+                  <div>版本号：<b>V2026.2</b> · 文件：DOCX · 8 页<br />形成日期：2026-06-20 · 提交人：<b>张三</b></div>
+                  <div>版本号：<b>V0.8</b> · 文件：DOCX · 10 页<br />形成日期：2026-06-12 · 提交人：<b>法务部</b></div>
+                </div>
+                <div class="compare-alert"><i data-lucide="alert-triangle"></i>检出 3 处隐性变更，其中 2 处涉及责任与违约条款——业务方备注"和去年一样"，实则不一致。</div>
+                <div class="compare-columns">
+                  <div class="compare-col">
+                    <div class="compare-col-head">SaaS 标准模板(基准)</div>
+                    <div class="compare-row">第六条 违约金：每逾期一日按 0.05% 计</div>
+                    <div class="compare-row">第八条 责任上限：不低于合同总额</div>
+                    <div class="compare-row">第十条 管辖：甲方所在地法院</div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-col-head">云策订购单(变更高亮)</div>
+                    <div class="compare-row old">第六条 违约金：每逾期一日按 0.05% 计</div>
+                    <div class="compare-row new">违约金改为 0.02% 计<span class="tag amber">对甲方不利</span></div>
+                    <div class="compare-row old">第八条 责任上限：不低于合同总额</div>
+                    <div class="compare-row new">责任上限改为近 3 个月费用<span class="tag red">触红线</span></div>
+                    <div class="compare-row">第十条 管辖：甲方所在地法院(未变)</div>
+                    <div class="compare-row new">新增第十二条：自动续约<span class="tag red">新增红线</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <div class="product-wrap reverse">
+          <div class="product-visual">
+            <div class="rem-shell" aria-label="审核意见预览">
+              <div class="app-top">
+                <span class="dot-circle"></span>
+                <b>星阑智能合同审查平台</b>
+                <span class="env">内网部署 · 数据不出域</span>
+                <div class="app-top-r"><span class="bell-wrap"><i data-lucide="bell"></i><i class="bell-dot"></i></span><i data-lucide="user-circle"></i><span class="user-name">李明</span></div>
+              </div>
+              <div class="app-layout">
+                <aside class="app-side">
+                  <div class="app-nav"><i data-lucide="file-check-2"></i>合同审查</div>
+                  <div class="app-nav active"><i data-lucide="clipboard-check"></i>审核意见</div>
+                  <div class="app-nav"><i data-lucide="git-compare"></i>版本对比</div>
+                  <div class="app-nav"><i data-lucide="calendar-clock"></i>履约提醒</div>
+                  <div class="app-nav"><i data-lucide="sliders-horizontal"></i>规则管理</div>
+                </aside>
+                <div class="app-main">
+                  <div class="app-page-title">审核意见</div>
+                  <div class="opinion-tabs"><span class="on">全部意见</span><span>我出具的</span><span>待终审</span></div>
+                  <div class="opinion-filters">
+                    <div class="lf">风险等级 <b>全部</b></div>
+                    <div class="lf">结论 <b>全部</b></div>
+                    <span class="opinion-count">筛选结果 5 条</span>
+                  </div>
+                  <div class="opinion-table">
+                    <div class="opinion-row head"><span>合同名称</span><span>风险等级</span><span>结论</span><span>审查人</span><span>出具日期</span><span>操作</span></div>
+                    <div class="opinion-row"><span>云策数据分析平台订购单</span><span class="opinion-risk high">高</span><span>暂不可签</span><span>小李</span><span>2026-06-20</span><span class="opinion-link">查看</span></div>
+                    <div class="opinion-row"><span>恒芯电子框架续约件</span><span class="opinion-risk mid">中</span><span>谈判后可签</span><span>小李</span><span>2026-06-19</span><span class="opinion-link">查看</span></div>
+                    <div class="opinion-row"><span>某供应商自有模板合同</span><span class="opinion-risk high">高</span><span>已驳回</span><span>王芳</span><span>2026-06-17</span><span class="opinion-link">查看</span></div>
+                    <div class="opinion-row"><span>IT 运维服务合同</span><span class="opinion-risk low">低</span><span>可签</span><span>王芳</span><span>2026-06-16</span><span class="opinion-link">查看</span></div>
+                    <div class="opinion-row"><span>智能门锁芯片采购合同</span><span class="opinion-risk low">低</span><span>可签</span><span>小李</span><span>2026-06-15</span><span class="opinion-link">查看</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="product-copy">
+            <div class="eyebrow"><i data-lucide="trending-up"></i>Built for Growth</div>
+            <h2>让审查能力<br /><span>随企业一起扩展</span></h2>
+            <p class="section-desc">从法务一个人盯 Excel，到全公司共享的履约看板。星阑陪你把审查中反复出现的判断，转化为规则、知识和提醒。</p>
+            <div class="product-points">
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>覆盖法务、采购、销售、服务交付等多角色协同场景。</span></div>
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>历史漏提醒事故沉淀为整改措施，损失从 ¥18 万降至 ¥0。</span></div>
+              <div class="product-point"><i><svg data-lucide="check"></svg></i><span>内网部署，数据不出域，满足企业级安全合规要求。</span></div>
+            </div>
+            <button class="btn btn-primary" data-action="demo">预约产品演示<span class="btn-arrow"><i data-lucide="arrow-up-right"></i></span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section center" id="impact">
+        <div class="section-head">
+          <div class="eyebrow"><i data-lucide="repeat"></i>A Clearer Contract Process</div>
+          <h2>让审查从一次性工作，<br /><span>变成可持续的能力</span></h2>
+          <p class="section-desc">把合同审查中反复出现的判断，转化为规则、知识和提醒，帮助团队越用越快，越用越稳。</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric"><strong>80%</strong><span>AI 初审阶段效率提升</span></div>
+          <div class="metric"><strong>70%+</strong><span>整体审查周期缩短</span></div>
+          <div class="metric"><strong>5+</strong><span>高频合同场景覆盖</span></div>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div class="eyebrow on-dark"><i data-lucide="arrow-up-right"></i>Ready to Review Better?</div>
+        <h2>把法务经验，变成企业能力</h2>
+        <p>从第一份合同开始，让星阑陪你建立更快、更稳、更可复用的审查流程。</p>
+        <button class="btn btn-primary" data-action="demo">预约产品演示<span class="btn-arrow"><i data-lucide="arrow-up-right"></i></span></button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="#top"><span class="brand-mark"><i data-lucide="sparkles"></i></span><span>星阑</span></a>
+      <span>企业合同智能审查平台 · 内网部署方案</span>
+      <div class="footer-links"><a href="#features">产品能力</a><a href="#product">审查工作台</a><a href="#contact">联系我们</a></div>
+    </footer>
+    <div class="toast" role="status" aria-live="polite"><i data-lucide="check-circle-2"></i><span></span></div>
+    <div class="modal-backdrop" id="demo-modal">
+      <div class="modal">
+        <button class="modal-close" aria-label="关闭"><i data-lucide="x"></i></button>
+        <div class="eyebrow"><i data-lucide="play"></i>Product Walkthrough</div>
+        <h3>星阑如何完成一次合同审查</h3>
+        <p>用一个清晰的流程，把合同从上传带到可落地的审核意见。</p>
+        <div class="modal-steps">
+          <div class="modal-step"><span>1</span><div><b>上传并解析</b> · 支持 Word、PDF 与扫描件，OCR 结果可人工确认。</div></div>
+          <div class="modal-step"><span>2</span><div><b>AI 识别风险</b> · 按企业规则和知识库逐条比对，标注风险等级与依据。</div></div>
+          <div class="modal-step"><span>3</span><div><b>法务确认意见</b> · 采纳或修改建议，一键生成可交付的审核意见书。</div></div>
+        </div>
+        <a class="btn btn-primary" href="./contract-app.html" data-action="enter-app">进入产品体验<span class="btn-arrow"><i data-lucide="arrow-right"></i></span></a>
+      </div>
+    </div>
+    <script>
+      lucide.createIcons();
+      const header = document.querySelector('.site-header');
+      const toggle = document.querySelector('.mobile-toggle');
+      toggle.addEventListener('click', () => header.classList.toggle('mobile-open'));
+      document.querySelectorAll('.nav-links a').forEach((link) => link.addEventListener('click', () => header.classList.remove('mobile-open')));
+      const toast = document.querySelector('.toast');
+      let toastTimer;
+      function showToast(message) { toast.querySelector('span').textContent = message; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
+      const modal = document.querySelector('#demo-modal');
+      function openDemo() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function closeDemo() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+      document.querySelectorAll('[data-action="demo"]').forEach((button) => button.addEventListener('click', openDemo));
+      document.querySelectorAll('[data-action="preview"]').forEach((button) => button.addEventListener('click', () => { document.querySelector('#product').scrollIntoView({ behavior:'smooth' }); showToast('已定位到审查工作台预览'); }));
+      document.querySelector('.modal-close').addEventListener('click', closeDemo);
+      // “进入产品体验”已改为直接跳转到产品体验页（contract-app.html），无需额外监听
+      modal.addEventListener('click', (event) => { if (event.target === modal) closeDemo(); });
+      document.querySelectorAll('.feature-link').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); showToast('能力详情已在审查工作台中展开'); document.querySelector('#product').scrollIntoView({ behavior:'smooth' }); }));
+    </script>
+  </body>
+</html>

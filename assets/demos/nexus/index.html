@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus · AI 电商中台 — 产品案例</title>
+<style>
+  :root{
+    --ink:#17162B;
+    --muted:#6F7083;
+    --soft:#9B99A9;
+    --violet:#6257DF;
+    --violet-dark:#5146D1;
+    --violet-soft:#EFEDFF;
+    --cyan:#3FB8AF;
+    --coral:#E17262;
+    --line:rgba(36,33,76,.09);
+    --bg:#FBFBFE;
+    --font:'HarmonyOS Sans SC','PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font);background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;border:0;background:none;cursor:pointer;}
+  img,svg{display:block;max-width:100%;}
+  main{position:relative;overflow:hidden;}
+  .wrap{width:min(1160px,calc(100% - 48px));margin-inline:auto;}
+  .wrap-wide{width:min(1360px,calc(100% - 40px));margin-inline:auto;}
+  :focus-visible{outline:2px solid var(--violet-dark);outline-offset:3px;}
+
+  .page-glow{position:absolute;z-index:-1;pointer-events:none;border-radius:999px;filter:blur(10px);}
+  .glow-one{width:760px;height:520px;top:-160px;left:50%;transform:translateX(-72%);background:radial-gradient(circle,rgba(134,119,255,.24),transparent 70%);}
+  .glow-two{width:620px;height:620px;top:120px;right:-260px;background:radial-gradient(circle,rgba(63,184,175,.16),transparent 68%);}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;color:var(--violet);
+    font-size:12px;font-weight:700;letter-spacing:.02em;
+    padding:7px 12px;border:1px solid rgba(98,87,223,.13);border-radius:999px;background:#EFEDFFB8;
+  }
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--violet);flex-shrink:0;}
+
+  h1,h2,h3{letter-spacing:-.03em;line-height:1.2;}
+
+  /* ===================== NAV ===================== */
+  .site-header{position:sticky;top:0;z-index:50;padding:16px 24px 0;}
+  .nav-shell{
+    position:relative;width:min(1160px,100%);min-height:66px;margin:0 auto;padding:0 18px 0 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    border:1px solid rgba(255,255,255,.82);border-radius:18px;background:#ffffffc2;
+    box-shadow:0 14px 42px rgba(58,47,144,.08);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);
+  }
+  .nav-brand{display:inline-flex;align-items:center;gap:8px;font-size:16.5px;font-weight:800;letter-spacing:-.03em;white-space:nowrap;}
+  .nav-mark{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;color:#fff;background:linear-gradient(135deg,#7A6EF1,#3FB8AF);box-shadow:0 7px 16px rgba(98,87,223,.24);flex-shrink:0;}
+  .nav-mark svg{width:15px;height:15px;}
+  .nav-tag{margin-left:-2px;padding:3px 7px;border-radius:6px;color:var(--violet);background:var(--violet-soft);font-size:10px;font-weight:700;}
+  .nav-links{display:flex;align-items:center;gap:28px;color:#55566A;font-size:13px;}
+  .nav-links a{position:relative;padding:23px 0;font-weight:600;transition:color .18s ease;}
+  .nav-links a::after{content:"";position:absolute;left:50%;bottom:16px;width:0;height:2px;border-radius:2px;background:var(--violet);transform:translateX(-50%);transition:width .18s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a:hover::after{width:16px;}
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 16px;border-radius:10px;
+    color:#fff;background:linear-gradient(135deg,#7064E9,#5146D1);font-size:12.5px;font-weight:700;
+    box-shadow:0 12px 24px rgba(87,75,213,.24);transition:transform .18s ease,box-shadow .18s ease;white-space:nowrap;
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(87,75,213,.32);}
+  @media (max-width:860px){ .nav-links{display:none;} }
+
+  /* ===================== HERO ===================== */
+  .hero{padding:88px 0 8px;text-align:center;position:relative;}
+  .hero-inner{display:flex;flex-direction:column;align-items:center;gap:22px;}
+  .hero h1{max-width:840px;margin:8px auto 0;font-size:clamp(38px,5vw,58px);font-weight:800;letter-spacing:-.045em;}
+  .hero h1 span{
+    color:transparent;background:linear-gradient(100deg,#5B51D7 8%,#7A64ED 47%,#33ADA6);
+    -webkit-background-clip:text;background-clip:text;
+  }
+  .hero p.lead{max-width:600px;color:var(--muted);font-size:16px;line-height:1.85;}
+  .hero-actions{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:4px;}
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:8px;min-height:50px;padding:0 24px;border-radius:11px;
+    color:#fff;font-size:14px;font-weight:700;background:linear-gradient(135deg,#7064E9,#5146D1);
+    box-shadow:0 14px 30px rgba(87,75,213,.26);transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(87,75,213,.32);}
+  .btn-ghost{
+    display:inline-flex;align-items:center;gap:7px;min-height:48px;padding:0 4px;color:#454458;
+    font-size:14px;font-weight:650;transition:gap .18s ease;
+  }
+  .btn-ghost svg{color:var(--violet);transition:transform .18s ease;}
+  .btn-ghost:hover svg{transform:translateX(3px);}
+
+  .trust-strip{
+    width:min(880px,100%);margin:38px auto 0;padding:16px 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+    border:1px solid rgba(34,31,71,.07);border-radius:16px;background:#ffffffb8;box-shadow:0 14px 35px rgba(62,54,135,.06);
+  }
+  .trust-strip .stat{display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .trust-strip strong{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;}
+  .trust-strip strong em{font-style:normal;color:var(--violet);}
+  .trust-strip span{color:var(--soft);font-size:10.5px;font-weight:600;}
+  @media (max-width:720px){ .trust-strip{grid-template-columns:repeat(2,1fr);} }
+
+  /* ===================== DEMO / MODULE STAGE ===================== */
+  .demo-section{padding:76px 0 128px;}
+  .demo-head{max-width:600px;margin:0 auto 30px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;}
+  .demo-head h2{font-size:28px;font-weight:800;}
+  .demo-head p{color:var(--muted);font-size:14px;line-height:1.75;}
+
+  .module-tabs{
+    width:fit-content;max-width:100%;margin:0 auto 26px;padding:5px;display:flex;gap:5px;flex-wrap:wrap;justify-content:center;
+    border:1px solid rgba(50,45,100,.08);border-radius:13px;background:#F4F3FA;
+  }
+  .module-tabs button{
+    min-width:104px;min-height:40px;padding:0 14px;border-radius:9px;color:#77778A;font-size:12px;font-weight:700;
+    transition:color .18s ease,background .18s ease,box-shadow .18s ease;
+  }
+  .module-tabs button.active{color:var(--violet);background:#fff;box-shadow:0 8px 18px rgba(73,61,170,.14);}
+
+  .stage-shell{
+    width:100%;margin:0 auto;overflow:hidden;border:1px solid rgba(255,255,255,.95);border-radius:22px;
+    background:#ffffffd6;box-shadow:0 44px 100px rgba(85,71,185,.17),0 8px 26px rgba(65,52,160,.08);
+    position:relative;
+  }
+  .stage-shell::before{
+    content:"";position:absolute;inset:-90px 7% auto;height:180px;z-index:-1;
+    background:radial-gradient(circle,rgba(110,96,233,.24),transparent 70%);filter:blur(22px);
+  }
+  .stage-topline{height:42px;padding:0 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;color:#82829466;font-size:11px;border-bottom:1px solid var(--line);background:#fff;}
+  .stage-dots{display:flex;gap:5px;}
+  .stage-dots span{width:7px;height:7px;border-radius:50%;background:#D9D8E7;}
+  .stage-label{justify-self:center;font-weight:700;color:#5A5A6E;}
+  .stage-status{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:#3AA06C;}
+  .stage-status i{width:6px;height:6px;border-radius:50%;background:#37B978;box-shadow:0 0 0 4px rgba(55,185,120,.14);}
+
+  .stage-frame-wrap{position:relative;width:100%;overflow:hidden;background:#EEF0FA;aspect-ratio:1472/874;}
+  .stage-frame-wrap iframe{position:absolute;top:0;left:0;width:1472px;height:874px;border:none;transform-origin:0 0;}
+
+  .module-panel{
+    width:100%;margin:26px auto 0;padding:26px 30px;display:flex;gap:26px;align-items:flex-start;
+    border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 18px 40px rgba(59,52,128,.06);
+  }
+  .module-panel .badge{
+    flex-shrink:0;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    background:var(--violet-soft);color:var(--violet);font-weight:800;font-size:13px;
+  }
+  .module-panel h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .module-panel p.desc{color:var(--muted);font-size:13.5px;line-height:1.75;margin-bottom:14px;}
+  .module-panel ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .module-panel li{display:flex;align-items:center;gap:9px;color:#4D4D60;font-size:12.5px;font-weight:600;}
+  .module-panel li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
+  @media (max-width:720px){ .module-panel{flex-direction:column;} }
+
+  .demo-note{text-align:center;font-size:12px;color:var(--soft);margin-top:18px;font-weight:600;}
+  .demo-note b{color:var(--muted);}
+
+  /* ===================== SECTION SHARED ===================== */
+  .section{padding:110px 0;}
+  .section.on-tint{background:linear-gradient(180deg,#F7F6FF66,#F6F5FD 44%,#F8F9FF85);}
+  .section-head{max-width:640px;margin:0 auto 50px;text-align:center;display:flex;flex-direction:column;gap:15px;align-items:center;}
+  .section-head h2{font-size:clamp(28px,3.4vw,38px);font-weight:800;}
+  .section-head p{color:var(--muted);font-size:14.5px;line-height:1.8;}
+  .section-tag{padding:6px 11px;border-radius:999px;background:#ECE9FF;}
+
+  /* ===================== PROBLEM ===================== */
+  .challenge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .challenge-card{
+    min-height:250px;padding:28px;display:flex;flex-direction:column;border:1px solid rgba(50,45,100,.07);
+    border-radius:20px;background:#ffffffe0;box-shadow:0 22px 55px rgba(65,56,150,.07);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .challenge-card:hover{transform:translateY(-5px);box-shadow:0 30px 65px rgba(65,56,150,.11);}
+  .cap-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;flex-shrink:0;}
+  .cap-icon.violet{color:#685CE2;background:#EEEBFF;}
+  .cap-icon.coral{color:#E17262;background:#FFF0ED;}
+  .cap-icon.cyan{color:#21AAA2;background:#E6F8F6;}
+  .challenge-card h3{margin-top:20px;font-size:18px;font-weight:800;letter-spacing:-.02em;}
+  .challenge-card p{margin:11px 0 22px;color:var(--muted);font-size:13px;line-height:1.8;}
+  .card-result{margin-top:auto;padding-top:16px;display:flex;align-items:center;gap:8px;color:#49475A;border-top:1px solid var(--line);font-size:11.5px;font-weight:700;}
+  .card-result svg{color:var(--violet);flex-shrink:0;}
+  @media (max-width:860px){ .challenge-grid{grid-template-columns:1fr;} }
+
+  /* ===================== ARCHITECTURE ===================== */
+  .arch-stack{display:flex;flex-direction:column;gap:12px;}
+  .arch-card{
+    padding:24px 26px;display:grid;grid-template-columns:52px minmax(220px,1fr) 1.25fr;align-items:center;gap:22px;
+    border:1px solid rgba(50,45,100,.07);border-radius:17px;background:#ffffffe0;
+    box-shadow:0 22px 55px rgba(65,56,150,.07);
+    transition:background .2s ease,box-shadow .2s ease,transform .2s ease;
+  }
+  .arch-card:hover{transform:translateY(-3px);box-shadow:0 30px 65px rgba(65,56,150,.11);}
+  .arch-num{font-size:13px;font-weight:800;color:var(--soft);}
+  .arch-copy h3{font-size:17px;font-weight:800;color:var(--ink);}
+  .arch-copy p{margin-top:7px;color:var(--muted);font-size:12.5px;line-height:1.75;}
+  .arch-tags{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;}
+  .arch-tags span{padding:7px 12px;border:1px solid rgba(98,87,223,.12);border-radius:999px;color:#5C57A2;background:var(--violet-soft);font-size:10.5px;font-weight:700;white-space:nowrap;}
+  @media (max-width:820px){
+    .arch-card{grid-template-columns:32px 1fr;}
+    .arch-tags{grid-column:1 / -1;justify-content:flex-start;padding-left:0;}
+  }
+
+  /* ===================== CAPABILITY SUMMARY ===================== */
+  .cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .cap-card{
+    padding:24px 20px;display:flex;flex-direction:column;gap:12px;border:1px solid rgba(50,45,100,.07);
+    border-radius:18px;background:#fff;box-shadow:0 18px 40px rgba(59,52,128,.06);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .cap-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px rgba(59,52,128,.1);}
+  .cap-card h3{font-size:14.5px;font-weight:800;}
+  .cap-card p{font-size:12px;color:var(--muted);line-height:1.7;}
+  .cap-card .metric{margin-top:auto;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--violet-dark);}
+  @media (max-width:860px){ .cap-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* ===================== RESULTS ===================== */
+  .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .result-grid article{padding:30px 24px;border:1px solid rgba(51,46,102,.07);border-radius:18px;background:#fff;box-shadow:0 18px 45px rgba(60,52,135,.06);}
+  .result-grid strong{display:block;color:var(--violet);font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+  .result-grid strong span{margin-left:2px;font-size:16px;letter-spacing:-.01em;}
+  .result-grid h3{margin-top:24px;font-size:14px;font-weight:800;}
+  .result-grid p{margin-top:8px;color:var(--muted);font-size:11.5px;line-height:1.7;}
+  @media (max-width:860px){ .result-grid{grid-template-columns:repeat(2,1fr);} }
+
+  footer{border-top:1px solid var(--line);background:#fff;}
+  .footer-inner{min-height:96px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:#8C8C9B;font-size:11.5px;font-weight:600;}
+
+  [data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+  [data-reveal].in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+    [data-reveal]{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="nav-shell">
+      <div class="nav-brand">
+        <span class="nav-mark">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 18V6l16 12V6" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        Nexus<span class="nav-tag">AI 电商中台</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#problem">项目背景</a>
+        <a href="#architecture">产品架构</a>
+        <a href="#demo">核心能力</a>
+        <a href="#results">项目成果</a>
+      </nav>
+      <a class="nav-cta" href="#demo">查看在线 Demo</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+      <div class="page-glow glow-one"></div>
+      <div class="page-glow glow-two"></div>
+      <div class="wrap hero-inner">
+        <div class="eyebrow">AI 产品案例 · 电商中台 0→1</div>
+        <h1>让 <span>AI</span> 走进企业生产流程，<br>而不只是一个聊天窗口。</h1>
+        <p class="lead">
+          面向鞋服定制行业设计依赖人工、内容生产周期长、直播运营效率低的现实问题，我主导搭建了
+          「AI生成能力层 + 业务知识层 + 智能决策层」的电商中台，把视觉设计、内容生产与直播运营，
+          统一收进同一套可管理的 AI 能力体系。
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#demo">体验在线 Demo <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg></a>
+          <a class="btn-ghost" href="#architecture">查看产品架构 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="trust-strip">
+          <div class="stat"><strong><em>8000+</em></strong><span>结构化视觉资产</span></div>
+          <div class="stat"><strong><em>60%+</em></strong><span>素材生产效率提升</span></div>
+          <div class="stat"><strong>2h→<em>15min</em></strong><span>主播脚本准备时间</span></div>
+          <div class="stat"><strong><em>12–20%</em></strong><span>单场直播 GMV 提升</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DEMO / MODULE STAGE ===================== -->
+    <section class="demo-section" id="demo">
+      <div class="wrap-wide">
+        <div class="demo-head" data-reveal>
+          <div class="eyebrow">核心能力 · 可交互原型</div>
+          <h2>四大 AI 应用场景，覆盖设计到直播全链路</h2>
+          <p>下面是真实可交互的产品原型——点击标签页，实际驱动左侧的 Nexus 中台在对应模块间切换。</p>
+        </div>
+
+        <div class="module-tabs" role="tablist" data-reveal>
+          <button data-tab="dashboard" class="active">数据总览</button>
+          <button data-tab="visual">视觉生成</button>
+          <button data-tab="content">内容生成</button>
+          <button data-tab="live">智能直播</button>
+          <button data-tab="knowledge">知识库</button>
+        </div>
+
+        <div class="stage-shell" data-reveal>
+          <div class="stage-topline">
+            <div class="stage-dots"><span></span><span></span><span></span></div>
+            <div class="stage-label" id="stageLabel">数据总览</div>
+            <div class="stage-status"><i></i>可交互</div>
+          </div>
+          <div class="stage-frame-wrap">
+            <iframe id="demoFrame" src="dashboard-demo.html" title="Nexus AI 电商中台可交互原型" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div class="module-panel" data-reveal>
+          <div class="badge" id="panelBadge">01</div>
+          <div>
+            <h3 id="panelTitle">数据总览</h3>
+            <p class="desc" id="panelDesc"></p>
+            <ul id="panelBullets"></ul>
+          </div>
+        </div>
+
+        <div class="demo-note">两个文件需保持在<b>同一文件夹</b>下打开，点击上方标签或原型内左侧导航均可实际切换模块。</div>
+      </div>
+    </section>
+
+    <!-- ===================== PROBLEM ===================== -->
+    <section class="section on-tint" id="problem">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow section-tag">项目背景</div>
+          <h2>鞋服定制行业，经营效率卡在这三处</h2>
+          <p>传统模式下，设计、内容与直播三条线各自为战，缺乏统一的 AI 能力支撑，导致生产周期长、经营决策靠经验。</p>
+        </div>
+        <div class="challenge-grid" data-reveal>
+          <div class="challenge-card">
+            <div class="cap-icon violet">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <h3>设计依赖人工</h3>
+            <p>商品主图、直播封面、私域海报等视觉素材长期依赖设计师人工产出，跟不上高频上新与直播节奏。</p>
+            <div class="card-result">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              对应：AI 生成能力层
+            </div>
+          </div>
+          <div class="challenge-card">
+            <div class="cap-icon coral">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V6a2 2 0 012-2h9l5 5v10.5a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 9h4M9 13h6M9 17h6"/></svg>
+            </div>
+            <h3>内容生产周期长</h3>
+            <p>种草文案、转化话术、直播脚本均需人工撰写，准备周期长，多渠道内容一致性也难以保证。</p>
+            <div class="card-result">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              对应：业务知识层
+            </div>
+          </div>
+          <div class="challenge-card">
+            <div class="cap-icon cyan">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <h3>直播运营效率低</h3>
+            <p>排品策略、话术准备与经营复盘缺乏数据支撑，关键决策依赖主播和运营的个人经验。</p>
+            <div class="card-result">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              对应：智能决策层
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ARCHITECTURE ===================== -->
+    <section class="section on-tint" id="architecture">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow">产品架构 · 产品负责人</div>
+          <h2>三层架构，把 AI 变成可管理的中台能力</h2>
+          <p>制定 AI 能力落地路径，明确模型选型、产品优先级与应用场景；搭建 AI 能力中台，统一管理模型调用、Prompt 模板、知识资产与业务数据，建立效果、效率、成本评估体系。</p>
+        </div>
+        <div class="arch-stack" data-reveal>
+          <div class="arch-card">
+            <div class="arch-num">01</div>
+            <div class="arch-copy">
+              <h3>AI 生成能力层</h3>
+              <p>多模态商品理解与素材生成，构建"商品理解—素材生成—品牌风格控制—资产沉淀"的视觉生产闭环。</p>
+            </div>
+            <div class="arch-tags"><span>Qwen-VL 商品理解</span><span>FLUX / SDXL 素材生成</span><span>SD LoRA 风格定制</span></div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-num">02</div>
+            <div class="arch-copy">
+              <h3>业务知识层</h3>
+              <p>搭建 RAG 电商知识库，融合行业知识、商品卖点与历史素材资产，建立商品标签体系。</p>
+            </div>
+            <div class="arch-tags"><span>RAG 知识库</span><span>商品标签体系</span><span>结构化资产沉淀</span></div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-num">03</div>
+            <div class="arch-copy">
+              <h3>智能决策层</h3>
+              <p>推动 LLM + BI 智能直播能力落地，实现脚本生成、智能排品与经营复盘。</p>
+            </div>
+            <div class="arch-tags"><span>LLM Agent</span><span>智能排品</span><span>经营复盘</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CAPABILITY SUMMARY ===================== -->
+    <section class="section" id="capabilities">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow section-tag">能力成果一览</div>
+          <h2>每个 AI 应用场景，都对应一个可验证的经营结果</h2>
+        </div>
+        <div class="cap-grid" data-reveal>
+          <div class="cap-card">
+            <h3>视觉生成</h3>
+            <p>商品理解—素材生成—风格控制—资产沉淀，构建视觉生产闭环。</p>
+            <div class="metric">↑ 效率提升 60%+</div>
+          </div>
+          <div class="cap-card">
+            <h3>内容生成</h3>
+            <p>基于 RAG 知识库自动生成文案、种草内容与营销话术。</p>
+            <div class="metric">融合行业知识与历史素材</div>
+          </div>
+          <div class="cap-card">
+            <h3>智能直播</h3>
+            <p>LLM + BI 驱动脚本生成、智能排品与经营复盘。</p>
+            <div class="metric">脚本准备 2h → 15min</div>
+          </div>
+          <div class="cap-card">
+            <h3>知识资产</h3>
+            <p>管理模型调用、Prompt 模板与知识资产，建立评估体系。</p>
+            <div class="metric">沉淀 8000+ 结构化资产</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RESULTS ===================== -->
+    <section class="section on-tint" id="results">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow section-tag">项目成果</div>
+          <h2>从0到1，把 AI 能力接入真实经营指标</h2>
+          <p>打通 AI 能力与业务经营指标，通过智能排品、直播复盘与数据优化持续验证效果。</p>
+        </div>
+        <div class="result-grid" data-reveal>
+          <article><strong>8000<span>+</span></strong><h3>结构化视觉资产</h3><p>沉淀支撑多渠道内容生产</p></article>
+          <article><strong>60<span>%+</span></strong><h3>素材生产效率提升</h3><p>对比人工设计生产周期</p></article>
+          <article><strong>2h→15<span>min</span></strong><h3>主播脚本准备时间</h3><p>由人工撰写压缩至 AI 生成</p></article>
+          <article><strong>12–20<span>%</span></strong><h3>单场直播 GMV 提升</h3><p>对比未使用 AI 排品与复盘的场次</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>Nexus · AI 电商中台产品案例</span>
+      <span>设计 · 内容 · 直播一体化（TOB）</span>
+
+    </div>
+  </footer>
+
+<script>
+  // ---------- 演示原型：等比缩放，避免响应式挤压变形 ----------
+  (function(){
+    const wrap = document.querySelector('.stage-frame-wrap');
+    const frame = document.getElementById('demoFrame');
+    const NATIVE_W = 1472;
+    if(!wrap || !frame) return;
+    function fit(){
+      const scale = wrap.clientWidth / NATIVE_W;
+      frame.style.transform = 'scale(' + scale + ')';
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    if('ResizeObserver' in window){ new ResizeObserver(fit).observe(wrap); }
+  })();
+
+  // ---------- 标签页 <-> 原型内导航 双向联动 ----------
+  (function(){
+    const TABS = {
+      dashboard:{n:'01',label:'数据总览',desc:'全链路经营数据总览，追踪选品、素材、直播与内容的经营表现。',bullets:['AI 自动化完成率与响应时长实时监控','GMV 趋势、直播观看趋势可视化','本场直播任务实时流转跟踪']},
+      visual:{n:'02',label:'视觉生成',desc:'"商品理解—素材生成—品牌风格控制—资产沉淀"的视觉生产闭环。',bullets:['Qwen-VL 完成商品理解','FLUX / SDXL 生成素材，SD LoRA 定制品牌风格','结构化 Prompt 模板，降低设计门槛']},
+      content:{n:'03',label:'内容生成',desc:'基于 RAG 电商知识库的 LLM 内容生成，保障品牌一致性。',bullets:['自动生成种草文案与营销话术','融合行业知识、商品卖点与历史素材','多渠道内容一次生成、统一分发']},
+      live:{n:'04',label:'智能直播',desc:'LLM + BI 驱动脚本生成、智能排品与经营复盘。',bullets:['主播脚本准备时间 2 小时 → 15 分钟','BI 实时优化的智能排品策略','AI 自动生成经营复盘与下一场建议']},
+      knowledge:{n:'05',label:'知识库',desc:'结构化商品标签体系与业务知识资产统一管理。',bullets:['沉淀 8000+ 结构化视觉资产','管理模型调用与 Prompt 模板','建立效果、效率、成本评估体系']}
+    };
+    const tabBtns = document.querySelectorAll('.module-tabs button');
+    const frame = document.getElementById('demoFrame');
+    const stageLabel = document.getElementById('stageLabel');
+    const panelBadge = document.getElementById('panelBadge');
+    const panelTitle = document.getElementById('panelTitle');
+    const panelDesc = document.getElementById('panelDesc');
+    const panelBullets = document.getElementById('panelBullets');
+
+    function renderPanel(tab){
+      const d = TABS[tab];
+      if(!d) return;
+      panelBadge.textContent = d.n;
+      panelTitle.textContent = d.label;
+      panelDesc.textContent = d.desc;
+      stageLabel.textContent = d.label;
+      panelBullets.innerHTML = d.bullets.map(b=>'<li>'+b+'</li>').join('');
+    }
+    function setActiveBtn(tab){
+      tabBtns.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+    }
+    renderPanel('dashboard');
+
+    tabBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const tab = btn.dataset.tab;
+        setActiveBtn(tab);
+        renderPanel(tab);
+        frame.contentWindow && frame.contentWindow.postMessage({source:'nexusHost', type:'switchTab', tab}, '*');
+      });
+    });
+
+    // 原型内部若被直接点击切换，也同步回外部标签页
+    window.addEventListener('message', function(e){
+      const d = e.data;
+      if(d && d.source==='nexusDemo' && d.type==='tabChanged' && TABS[d.tab]){
+        setActiveBtn(d.tab);
+        renderPanel(d.tab);
+      }
+    });
+  })();
+
+  // ---------- 滚动淡入 ----------
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{threshold:.12});
+    revealEls.forEach(el=>io.observe(el));
+  } else {
+    revealEls.forEach(el=>el.classList.add('in'));
+  }
+</script>
+</body>
+</html>

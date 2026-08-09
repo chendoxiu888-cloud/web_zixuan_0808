@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Gemini 3.5 Pro 又跳票：Google 的麻烦，不只是晚了几周</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="logo">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 18 L14 6 L14 14 L28 14 L18 26 L18 18 Z" fill="#111"/>
+      </svg>
+      <span class="brand">CZX</span>
+      <span class="sub">AI研究笔记</span>
+    </div>
+    <nav class="main-nav">
+      <a href="#">Tours</a>
+      <a href="#">About Us</a>
+      <a href="#">Gallery</a>
+      <a href="#">Blog</a>
+      <a href="#">Contacts</a>
+    </nav>
+    <div class="nav-right">
+      <span class="search">Search &#128269;</span>
+      <button class="cta">Get started</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="article-head">
+    <h1>Gemini 3.5 Pro 又跳票：</h1>
+    <h2 class="subtitle">Google 的麻烦，不只是晚了几周</h2>
+  </div>
+
+  <div class="intro-box">
+    <p>在五月的开发者大会上，Google 的 CEO 站在台上，对着满场开发者说："给我们到下个月，就交到你们手上。"</p>
+    <p>下个月，是六月。可六月都快过完了，这个模型还没影。更让人不安的是：那些有能力做出这个模型的人，正在一个接一个地离开 Google。</p>
+    <p>一次跳票，本是寻常;但当跳票撞上人才出走，故事就变了味。</p>
+  </div>
+
+  <article class="content">
+    <h3>一、跳票本身：一个反复上演的剧本</h3>
+    <p>先把事实讲清楚，来源为 Business Insider、路透、Investing.com 等报道。</p>
+    <p>据 Business Insider 6 月 24 日报道（引述知情人士），Google 已经把旗舰模型 Gemini 3.5 Pro 的发布，从原定的 6 月推迟到了 7 月。事情的来龙去脉是这样的：Google 在 5 月的 I/O 开发者大会上预览了 Gemini 3.5 系列，CEO 皮查伊当时说 Pro 版"下个月"就来——也就是六月。同一天，它先把轻量版的 Gemini 3.5 Flash 发了出去，而 Pro 版一直留在有限的企业预览里。</p>
+    <p>结果六月快结束了，Pro 版的公开发布还没来。据报道，截至 6 月底，它仍处在 Vertex AI 平台的有限企业预览阶段。当被问及新的时间表时，Google 拒绝置评——所以严格说，"7 月"这个时间点来自媒体报道和知情人士，而非 Google 的官方承诺。写这件事时，对任何"精确到某一天"的说法都要留个心眼。</p>
+    <p>这里有个值得玩味的背景：据 Bind AI 等梳理，这已经不是 Google 今年第一次在旗舰模型上跳票了——此前的模型也曾被推迟。"承诺一个日期、然后错过"的模式，正在 Google 身上变成一种规律。对一家想在 AI 竞赛里领跑的公司，这种"总是差一口气"的节奏，本身就是个问题。</p>
+
+    <figure class="article-img">
+      <img src="assets/a09_img1.jpg" alt="发光的大脑数据网络造型，人形剪影面对服务器机房">
+    </figure>
+
+    <h3>二、为什么推迟：把话说回来，这未必是坏事</h3>
+    <p>先说句公道话：单看"推迟几周"这件事，它未必是坏事，甚至可能是负责任的表现。</p>
+    <p>据报道，Google 给出的官方解释是：想多花点时间收集早期测试者的反馈，在正式发布前把模型打磨得更好；同时，它也把发布 Flash 时学到的经验，吸收进了 Pro 的开发里。据 Bind AI、Lapaas 等分析，具体的打磨方向包括几点：一是长任务和智能体（agent）表现——Gemini 3.5 Pro 被寄望能处理复杂的、多步骤的长链路任务，而这类任务对系统稳定性要求极高，稍有不稳就会"跑偏"；二是 token 消耗问题——有用户反映 Flash 消耗 token 太快，长任务下会推高成本，Google 据报道正在 Pro 上处理这个问题。</p>
+    <p>从产品角度看，这些恰恰是你希望一个模型在正式发布前就做好的事。一个稳定、可靠的发布，长期价值往往高于"抢先几周上线"。据报道，Gemini 3.5 Pro 确认的能力也确实值得等待：比如 200 万 token 的上下文窗口（约为 Claude Opus 4.8 的两倍），以及类似"深度思考"的推理模式——这些对做长文档分析、代码库级推理、多轮智能体的开发者，是实打实的能力差距，不是跑分数字。</p>
+    <p>所以，如果故事只到这里，"Gemini 3.5 Pro 推迟到 7 月"完全算得上一条平淡的行业新闻。但它偏偏撞上了另一件更要命的事。</p>
+
+    <h3>三、真正的信号：能做出这个模型的人，正在离开</h3>
+    <p>跳票是日程问题，人才流失是另一种性质的信号。而这两件事，恰好撞在了一起。</p>
+    <p>我们在之前的文章里讲过这场"人才战争"里两个最响的名字，它们都发生在 Gemini 跳票的同一个窗口：</p>
+    <ul class="article-list">
+      <li>6 月 18 日，Noam Shazeer 宣布离开 Google 去 OpenAI。 他是 Gemini 模型的共同负责人、Transformer 架构的共同作者之一。Google 两年前才把他挖回来，据报道花了约 27 亿美元。</li>
+      <li>6 月 19 日，John Jumper 宣布离开 Google DeepMind 去 Anthropic。 他是 AlphaFold 的共同创造者、2024 年诺贝尔化学奖得主。</li>
+    </ul>
+    <p>这还没完。据 Bind AI、Startup Fortune 等报道，在 6 月 21 日至 27 日那一周，又有数位资深 Gemini 研究员宣布离开 Google 投奔 Anthropic（注意：这部分为科技媒体报道，具体人数以官方为准）；另据报道，Google 的 AI 编程团队在过去五个月里，流失了约六名研究员给 Meta、OpenAI、Anthropic 等对手。更早的行业分析（SignalFire 报告）则指出，DeepMind 的工程师流向 Anthropic 的比例接近 11:1。</p>
+    <p>把这些拼在一起，一个令人不安的画面浮现了：就在 Google 最需要顶尖人才把旗舰模型打磨上线的当口，恰恰是这些顶尖人才在成批离开。 跳票几周，Google 扛得住；但如果定义了前沿的这批人，接二连三地觉得"自己的下一份工作该在别处"，那就是一个比日程表严重得多的问题。</p>
+
+    <figure class="article-img">
+      <img src="assets/a09_img2.jpg" alt="天平秤在会议室背景前，象征人才流失与决策权衡">
+    </figure>
+
+    <h3>四、对做产品的人意味着什么</h3>
+    <p>一家巨头的模型晚了几周、走了几个人，跟做做品的你有什么关系？关系很实在。</p>
+    <p>第一，别把你的产品架构，押在一个"未发布的日期"上。 这是 Gemini 跳票给所有开发者最直接的教训。据 Bind AI 建议：Google 今年已经错过了多个交付节点，"7 月"是当前的指引，不是承诺。如果你正等着某个还没发布的旗舰模型来支撑你的核心功能，那你就是在一个不确定的日期上盖楼。正确的做法是：以当前真实可用的模型为基线来设计架构，把还没发布的模型的到来，当成一个"锦上添花的彩蛋"，而不是一个"不来就塌"的依赖项。</p>
+    <p>第二，"谁领先"是流动的，别为一时的排名重构系统。 据报道，当下没有哪一家实验室能舒舒服服地领先，领先权随着每次发布而易手，"打磨几周"的价值往往超过"抢先发布"。对产品人来说，这意味着你不该每次看到某家跑分登顶就急着把系统迁过去。围绕"这个模型能为你的业务做什么"来规划，而不是围绕它发布时制造的头条来规划。</p>
+    <p>第三，把"供应商的人才稳定性"当成一个真实的选型变量。 Google 的例子说明，一家公司的人才流失，最终会影响它产品的迭代速度和可靠性。当你在评估"要不要把核心业务长期押在某家供应商"时，除了看模型强不强、价格低不低，也值得关心：它在人才战争里是赢家还是输家？核心团队稳不稳？据 Startup Fortune 的点评，对一个正在为下半年选定模型栈的技术决策者来说，采购日历是真实的、安全审查是真实的、开发者的使用习惯也是真实的——当买家做默认选择时，"谁看起来更慢、更动荡"，就会实实在在地影响天平。</p>
+
+    <h3>五、方法论：如何应对"跳票"和不确定的发布节奏</h3>
+    <p>道理讲完，给你一套能落地的动作。在这个"人人跳票、领先权飞乱"的年代，产品人怎么才能不被供应商的节奏牵着走？</p>
+    <p>第一，永远以"今天能稳定调用的模型"为架构基线。 设计任何核心功能时，先问一句：如果那个我期待的新模型永远不来，我用现在能用的模型，能不能把这个功能做出来？如果答案是否定的，说明你把地基建在了流沙上。让产品在"当前可用模型"上就能跑通，新模型来了是升级，不来也不塌。</p>
+    <p>第二，为发布日期做"两手准备"，别做单一押注。 如果你的路线图里有一个环节，指望着某个未发布模型的特定能力（比如超长上下文），那就同时准备一个"用现有模型也能凑合实现"的降级方案。这样，无论那个模型 7 月来、8 月来、还是干脆延到明年，你的产品排期都不会被它绑架。</p>
+    <p>第三，把"未发布规格"和"已发布事实"严格分开。 网上流传的、还没正式发布的模型参数（上下文窗口、价格、跑分），在它真正 GA（正式可用）之前，都只是传闻。做技术决策时，只用已经落地、你能亲手验证的能力。别拿一个 PPT 上的数字，去承诺你产品的能力。</p>
+    <p>第四，把"人才流向"纳入你的供应商观察清单。 用很低的成本，持续跟踪几家关键 AI 公司的核心人事变动。当你看到某家在短期内密集流失核心研究员，把它标记为"迭代速度和稳定性存疑"；反过来，某个方向持续吸引顶尖人才，往往是能力即将增强的先行信号。这张清单，能帮你比多数人更早地判断该往哪家靠、离哪家远。</p>
+    <p>第五，在多供应商之间保持"随时可切"的能力。 这是应对一切不确定性的终极底牌。在你和模型之间加一层抽象，让"从 Google 切到 Anthropic、再切到别家"变成改配置，而不是重写系统。当某家因为跳票或动荡而掉链子时，你能几分钟内切走，而不是被迫陪它一起等。</p>
+
+    <h3>六、写在最后：能等的是模型，等不起的是人</h3>
+    <p>回到开头。皮查伊说"下个月就交给你们"，然后六月过去了，模型还没来。</p>
+    <p>如果故事只是"晚了几周"，那真不算什么——一个打磨得更好的模型，值得多等一个月。Gemini 3.5 Pro 确认的那些能力（两倍于对手的上下文、深度推理），也确实配得上等待。</p>
+    <p>但这条新闻真正的分量，不在日历上那几周，而在日历背后那个更深的问题：当定义了前沿的那批人，一个接一个地决定"我的下一份工作该在别处"时，Google 还能不能保持足够快的脚步？ 模型可以打磨、可以等待；但走掉的人，等不回来。</p>
+    <p>对做产品的你来说，这件事最实在的提醒只有一句：别把你的产品，建在任何一家供应商"下个月就来"的承诺之上。 能等的是模型，你的产品排期等不起。</p>
+
+    <figure class="article-img">
+      <img src="assets/a09_img3.jpg" alt="上海陆家嘴天际线日出景观">
+    </figure>
+
+    <hr class="divider">
+    <p class="sources">本文事实依据来自 Business Insider、路透、Investing.com、Bind AI、Startup Fortune 等公开报道（2026 年 6 月）。Gemini 3.5 Pro 的发布时间与技术规格未经 Google 官方最终确认，文中标注"据报道""未经确认"的部分请以官方发布为准。研究员离职的具体人数以各公司官方信息为准。</p>
+  </article>
+</div>
+
+<script>
+document.querySelectorAll('.article-img img').forEach(function(img){
+  img.addEventListener('error', function(){
+    var box = document.createElement('div');
+    box.className = 'img-fallback';
+    box.textContent = img.getAttribute('alt') || '配图';
+    box.style.cssText = 'padding:40px 24px;background:linear-gradient(135deg,#f2f2ef,#e8e8e4);border-radius:14px;color:#8a8f97;font-size:14px;text-align:center;line-height:1.7;border:1px dashed #d8d8d3;';
+    img.replaceWith(box);
+  });
+});
+</script>
+</body>
+</html>

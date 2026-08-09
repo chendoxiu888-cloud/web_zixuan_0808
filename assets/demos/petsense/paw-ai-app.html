@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Paw AI · 宠物健康管家</title>
+<script src="./assets/vendor/paw-ai/react.production.min.js"></script>
+<script src="./assets/vendor/paw-ai/react-dom.production.min.js"></script>
+<script src="./assets/vendor/paw-ai/babel.min.js"></script>
+<style>
+  @font-face {
+    font-family: "Poppins";
+    src: url("./assets/harmonyos-sans-sc.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { -webkit-font-smoothing: antialiased; }
+  ::-webkit-scrollbar { display: none; }
+  input, textarea, button { font-family: inherit; }
+  button { -webkit-tap-highlight-color: transparent; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+
+const { useState, useRef, useEffect } = React;
+
+/* ============================== ICONS (dependency-free) ==============================
+   Small hand-drawn line icons (stroke-based, lucide-like) so this file has zero
+   external icon dependency. Each is a tiny component with the same name the app
+   already references, so the rest of the code needs no changes.
+======================================================================================== */
+function Ico({ children, size = 18, color = "currentColor", style }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style}>
+      {children}
+    </svg>
+  );
+}
+function Home(p) { return <Ico {...p}><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /></Ico>; }
+function HeartPulse(p) { return <Ico {...p}><path d="M3 12h4l1.5-3L11 15l2-8 1.5 5H21" /></Ico>; }
+function Bot(p) { return <Ico {...p}><rect x="4" y="8" width="16" height="10" rx="3" /><circle cx="9" cy="13" r="1.1" fill={p.color || "currentColor"} stroke="none" /><circle cx="15" cy="13" r="1.1" fill={p.color || "currentColor"} stroke="none" /><path d="M12 4v4" /><circle cx="12" cy="3" r="1" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Watch(p) { return <Ico {...p}><rect x="6" y="5" width="12" height="14" rx="4" /><path d="M9 5V2M15 5V2M9 22v-3M15 22v-3" /></Ico>; }
+function User(p) { return <Ico {...p}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></Ico>; }
+function Bell(p) { return <Ico {...p}><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6" /><path d="M10 20a2 2 0 004 0" /></Ico>; }
+function Plus(p) { return <Ico {...p}><path d="M12 5v14M5 12h14" /></Ico>; }
+function ChevronLeft(p) { return <Ico {...p}><path d="M15 6l-6 6 6 6" /></Ico>; }
+function ChevronRight(p) { return <Ico {...p}><path d="M9 6l6 6-6 6" /></Ico>; }
+function Send(p) { return <Ico {...p}><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></Ico>; }
+function Crown(p) { return <Ico {...p}><path d="M3 18h18l-1.5-9-4.5 4-3-7-3 7-4.5-4L3 18z" /></Ico>; }
+function Info(p) { return <Ico {...p}><circle cx="12" cy="12" r="9" /><path d="M12 11v5" /><circle cx="12" cy="8" r="0.6" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function RefreshCw(p) { return <Ico {...p}><path d="M20 11A8 8 0 006.3 6.3L4 8.6" /><path d="M4 4v4.6h4.6" /><path d="M4 13a8 8 0 0013.7 4.7L20 15.4" /><path d="M20 20v-4.6h-4.6" /></Ico>; }
+function HelpCircle(p) { return <Ico {...p}><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2.5 1.7-2.5 3.5" /><circle cx="12" cy="17" r="0.6" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Users(p) { return <Ico {...p}><circle cx="9" cy="8" r="3" /><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5" /><circle cx="17" cy="9" r="2.6" /><path d="M15.5 14.2c2.7.4 5.5 2 5.5 5.8" /></Ico>; }
+function ShieldCheck(p) { return <Ico {...p}><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z" /><path d="M9 12l2 2 4-4" /></Ico>; }
+function X(p) { return <Ico {...p}><path d="M6 6l12 12M18 6L6 18" /></Ico>; }
+function PawPrint(p) { return <Ico {...p}><circle cx="12" cy="14.5" r="4" /><circle cx="5.5" cy="9" r="1.7" /><circle cx="9.5" cy="5" r="1.7" /><circle cx="14.5" cy="5" r="1.7" /><circle cx="18.5" cy="9" r="1.7" /></Ico>; }
+function Settings(p) { return <Ico {...p}><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" /></Ico>; }
+function AlertTriangle(p) { return <Ico {...p}><path d="M12 3l10 18H2L12 3z" /><path d="M12 9v5" /><circle cx="12" cy="17" r="0.6" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Moon(p) { return <Ico {...p}><path d="M20 14a8 8 0 11-9-9 6.5 6.5 0 009 9z" /></Ico>; }
+function Smile(p) { return <Ico {...p}><circle cx="12" cy="12" r="9" /><circle cx="9" cy="10" r="0.9" fill={p.color || "currentColor"} stroke="none" /><circle cx="15" cy="10" r="0.9" fill={p.color || "currentColor"} stroke="none" /><path d="M8 14c1 2 3 3 4 3s3-1 4-3" /></Ico>; }
+function Thermometer(p) { return <Ico {...p}><path d="M12 3a2 2 0 00-2 2v9a4 4 0 104 0V5a2 2 0 00-2-2z" /><circle cx="12" cy="18" r="1.8" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Activity(p) { return <Ico {...p}><path d="M3 12h4l2-7 4 14 2-7h6" /></Ico>; }
+function Utensils(p) { return <Ico {...p}><path d="M6 2v7a2 2 0 002 2 2 2 0 002-2V2M8 11v11" /><path d="M16 2c-1.5 0-3 1.5-3 4s1 4 1 4v11" /></Ico>; }
+function Edit3(p) { return <Ico {...p}><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z" /><path d="M14 5l3 3" /></Ico>; }
+function Wifi(p) { return <Ico {...p}><path d="M5 9a12 12 0 0114 0" /><path d="M8 13a7 7 0 018 0" /><circle cx="12" cy="18" r="1" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function BatteryMedium(p) { return <Ico {...p}><rect x="2" y="8" width="17" height="8" rx="2" /><path d="M21 10.5v3" /><rect x="4.5" y="10" width="7" height="4" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function ChevronDown(p) { return <Ico {...p}><path d="M6 9l6 6 6-6" /></Ico>; }
+function Check(p) { return <Ico {...p}><path d="M5 12l5 5L19 7" /></Ico>; }
+function Syringe(p) { return <Ico {...p}><path d="M18 4l2 2-11 11-2-2L18 4z" /><path d="M4 20l2-2" /><path d="M9 9l2 2M12 6l2 2" /></Ico>; }
+function Stethoscope(p) { return <Ico {...p}><path d="M6 3v6a4 4 0 008 0V3" /><path d="M10 13v2a5 5 0 0010 0v-1" /><circle cx="20" cy="13" r="1.4" /></Ico>; }
+function Camera(p) { return <Ico {...p}><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.4" /></Ico>; }
+function Pause(p) { return <Ico {...p}><rect x="6" y="4" width="4" height="16" fill={p.color || "currentColor"} stroke="none" /><rect x="14" y="4" width="4" height="16" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Play(p) { return <Ico {...p}><path d="M7 4l13 8-13 8V4z" fill={p.color || "currentColor"} stroke="none" /></Ico>; }
+function Bone(p) { return <Ico {...p}><rect x="5" y="10.5" width="14" height="3" rx="1.5" /><circle cx="5" cy="8.5" r="2" /><circle cx="5" cy="15.5" r="2" /><circle cx="19" cy="8.5" r="2" /><circle cx="19" cy="15.5" r="2" /></Ico>; }
+
+/* ============================== DEPENDENCY-FREE MINI BAR CHART ============================== */
+function MiniBarChart({ data, height = 150 }) {
+  const max = Math.max(...data.map((d) => d.v)) * 1.18;
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height, position: "relative" }}>
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} style={{ position: "absolute", left: 0, right: 0, bottom: (height / 3) * i, height: 1, background: "rgba(10,10,11,0.06)" }} />
+      ))}
+      {data.map((d, i) => (
+        <div key={i} title={String(d.v)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%", position: "relative", zIndex: 1 }}>
+          <div style={{ width: "68%", height: Math.max(4, (d.v / max) * height), background: d.today ? C.primary : "rgba(10,10,11,0.14)", borderRadius: "7px 7px 0 0", transition: "height .3s" }} />
+          <div style={{ fontSize: 11, color: C.subtle, marginTop: 6 }}>{d.day}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+/* ============================== DESIGN TOKENS ==============================
+   Monochrome editorial: pure greyscale, no hue anywhere. Depth comes from
+   translucency and blur rather than colour. Two surface tiers:
+     glass()  — Liquid Glass: translucent, blurred, specular top edge + inner
+                rim light, so it refracts whatever scrolls beneath it.
+     frost()  — heavier frosted panel for sheets and bars that must stay legible.
+   Status is carried by luminance (near-black = active, mid-grey = idle).
+============================================================================ */
+const C = {
+  /* Greyscale skeleton — carries structure, text, controls. */
+  text: "#0E1113",
+  sub: "#6B7378",
+  subtle: "#A2A9AD",
+  primary: "#14181A",          /* near-black pills & selected nav, like ref 1 */
+  primaryDeep: "#000000",
+  primaryTint: "rgba(14,17,19,0.06)",
+
+  /* Mint — the single brand accent. Health, progress, "alive" states. */
+  mint: "#12A06B",
+  mintSoft: "#3FC08C",
+  mintTint: "rgba(18,160,107,0.12)",
+
+  /* Aliases kept so existing call sites pick up the accent automatically. */
+  sage: "#12A06B",
+  sageTint: "rgba(18,160,107,0.12)",
+  gold: "#8A9296",
+  goldTint: "rgba(14,17,19,0.07)",
+
+  /* Status — muted, used sparingly the way ref 1 uses its single red. */
+  warn: "#B0803A",
+  warnTint: "rgba(176,128,58,0.13)",
+  danger: "#D9484D",
+  dangerTint: "rgba(217,72,77,0.11)",
+
+  hair: "rgba(14,17,19,0.08)",
+  canvas: "#EFF1F1",
+  card: "rgba(255,255,255,0.62)",
+  glass: "rgba(255,255,255,0.62)",
+  glassStrong: "rgba(255,255,255,0.80)",
+  glassBorder: "rgba(255,255,255,0.55)",
+  shadow: "0 8px 30px rgba(14,17,19,0.09)",
+};
+
+/* Neutral light-field with the faintest mint bloom — gives the glass something
+   to refract without tinting the whole UI green. */
+const AURORA_BG = {
+  backgroundImage: `
+    radial-gradient(at 12% 8%,  rgba(255,255,255,0.95) 0px, transparent 55%),
+    radial-gradient(at 86% 6%,  rgba(200,228,215,0.50) 0px, transparent 52%),
+    radial-gradient(at 8%  86%, rgba(178,184,186,0.38) 0px, transparent 50%),
+    radial-gradient(at 94% 92%, rgba(206,224,216,0.55) 0px, transparent 55%),
+    linear-gradient(180deg, #F4F6F5 0%, #E6EAE9 100%)
+  `,
+};
+
+/* ---- Liquid Glass -------------------------------------------------------
+   Apple's material reads as glass because of three cues layered together:
+   (1) backdrop blur + saturation boost, (2) a bright specular line along the
+   top edge, (3) an inner rim light that wraps the lower inside edge. The
+   box-shadow below stacks an outer drop shadow with two inset highlights to
+   produce all three without any images.
+-------------------------------------------------------------------------- */
+function glass(radius = 22, extra = {}) {
+  return {
+    background: "linear-gradient(160deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.44) 52%, rgba(255,255,255,0.58) 100%)",
+    backdropFilter: "blur(26px) saturate(180%)",
+    WebkitBackdropFilter: "blur(26px) saturate(180%)",
+    border: "1px solid rgba(255,255,255,0.6)",
+    borderRadius: radius,
+    boxShadow: [
+      "0 8px 30px rgba(10,10,11,0.09)",
+      "inset 0 1px 0 rgba(255,255,255,0.95)",
+      "inset 0 -1px 1px rgba(255,255,255,0.45)",
+    ].join(","),
+    ...extra,
+  };
+}
+
+/* Heavier frosted panel — sheets, bars, anything overlaying dense content. */
+function frost(radius = 22, extra = {}) {
+  return {
+    background: "rgba(246,246,248,0.74)",
+    backdropFilter: "blur(40px) saturate(190%)",
+    WebkitBackdropFilter: "blur(40px) saturate(190%)",
+    border: "1px solid rgba(255,255,255,0.5)",
+    borderRadius: radius,
+    boxShadow: "0 -8px 40px rgba(10,10,11,0.12), inset 0 1px 0 rgba(255,255,255,0.9)",
+    ...extra,
+  };
+}
+
+/* Near-black pill, the single high-contrast control. */
+function pill(extra = {}) {
+  return {
+    background: C.primary,
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: 999,
+    boxShadow: "0 6px 20px rgba(10,10,11,0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
+    cursor: "pointer",
+    ...extra,
+  };
+}
+
+/* ============================== PET AVATAR ==============================
+   Real photos can't be generated here, and pulling one off the web would drag
+   licensing into your portfolio. So the avatar is a real upload target: tap it,
+   pick a photo, the browser reads it to a data URL and it renders immediately —
+   no server, no rights problem. Until then a hand-drawn greyscale cat stands in.
+========================================================================= */
+function VectorCat({ size }) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="furG" x1="0.3" y1="0" x2="0.7" y2="1">
+          <stop offset="0%" stopColor="#F2F2F4" /><stop offset="55%" stopColor="#CFD1D6" /><stop offset="100%" stopColor="#9EA1A8" />
+        </linearGradient>
+        <linearGradient id="earG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#B9BCC2" /><stop offset="100%" stopColor="#8E9198" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="#E6E7EA" />
+      <path d="M24 40 L18 14 L40 27 Z" fill="url(#earG)" />
+      <path d="M76 40 L82 14 L60 27 Z" fill="url(#earG)" />
+      <path d="M26 38 L23 22 L36 30 Z" fill="#7E8189" opacity=".55" />
+      <path d="M74 38 L77 22 L64 30 Z" fill="#7E8189" opacity=".55" />
+      <ellipse cx="50" cy="54" rx="31" ry="28" fill="url(#furG)" />
+      <ellipse cx="39" cy="49" rx="4.6" ry="5.6" fill="#1A1B1D" />
+      <ellipse cx="61" cy="49" rx="4.6" ry="5.6" fill="#1A1B1D" />
+      <ellipse cx="40.4" cy="47" rx="1.6" ry="1.9" fill="#fff" opacity=".9" />
+      <ellipse cx="62.4" cy="47" rx="1.6" ry="1.9" fill="#fff" opacity=".9" />
+      <path d="M46.5 61 L53.5 61 L50 65.5 Z" fill="#6E7075" />
+      <path d="M50 65.5 Q45 71 39.5 67.5" stroke="#7E8189" strokeWidth="1.7" fill="none" strokeLinecap="round" />
+      <path d="M50 65.5 Q55 71 60.5 67.5" stroke="#7E8189" strokeWidth="1.7" fill="none" strokeLinecap="round" />
+      <g stroke="#B9BCC2" strokeWidth="1.2" strokeLinecap="round" opacity=".85">
+        <path d="M22 56 L7 53" /><path d="M22 60 L7 61" />
+        <path d="M78 56 L93 53" /><path d="M78 60 L93 61" />
+      </g>
+    </svg>
+  );
+}
+
+function PetAvatar({ pet, size = 52, onUpload, editable = true }) {
+  const inputRef = useRef(null);
+  const pick = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f || !onUpload) return;
+    const r = new FileReader();
+    r.onload = () => onUpload(r.result);
+    r.readAsDataURL(f);
+  };
+  return (
+    <div
+      onClick={editable && onUpload ? () => inputRef.current && inputRef.current.click() : undefined}
+      title={editable && onUpload ? "点击上传宠物照片" : undefined}
+      style={{
+        width: size, height: size, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
+        position: "relative", cursor: editable && onUpload ? "pointer" : "default",
+        background: "rgba(255,255,255,0.5)",
+        boxShadow: "0 2px 10px rgba(10,10,11,0.12), inset 0 0 0 1px rgba(255,255,255,0.75)",
+      }}
+    >
+      {pet.photo
+        ? <img src={pet.photo} alt={pet.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        : <VectorCat size={size} />}
+      {editable && onUpload && (
+        <>
+          <div style={{
+            position: "absolute", left: 0, right: 0, bottom: 0, height: size * 0.3,
+            background: "linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,0.55))",
+            display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 2,
+          }}>
+            <Camera size={Math.max(9, size * 0.2)} color="#fff" />
+          </div>
+          <input ref={inputRef} type="file" accept="image/*" onChange={pick} style={{ display: "none" }} />
+        </>
+      )}
+    </div>
+  );
+}
+
+function tagFor(score) {
+  if (score >= 90) return "优秀";
+  if (score >= 80) return "良好";
+  if (score >= 60) return "一般";
+  return "需关注";
+}
+
+/* ============================== MOCK DATA ============================== */
+/* Momo 默认头像 —— 用户提供的真实照片，内联为 data URL，
+   所以这个 html 单文件拷到哪都能显示，不依赖外部图片。 */
+const MOMO_PHOTO = "data:image/jpeg;base64,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";
+
+function makePet(preset) {
+  const presets = {
+    momo: { name: "Momo", sex: "♀", species: "布偶猫", avatar: "🐱", photo: MOMO_PHOTO, age: "2岁3个月", weight: "4.2kg", birth: "2022.02.14", chip: "PAW-CN-08213", activity: 85, sleep: 96, mood: 88, temp: "38.6°C", healthIndex: 92 },
+    coco: { name: "Coco", sex: "♂", species: "拉布拉多", avatar: "🐶", age: "1岁6个月", weight: "24.5kg", birth: "2024.11.02", chip: "PAW-CN-19042", activity: 92, sleep: 84, mood: 90, temp: "38.9°C", healthIndex: 88 },
+    lucky: { name: "Lucky", sex: "♂", species: "英国短毛猫", avatar: "🐈", age: "3岁1个月", weight: "5.1kg", birth: "2023.06.20", chip: "PAW-CN-22750", activity: 64, sleep: 90, mood: 75, temp: "38.5°C", healthIndex: 78 },
+  };
+  return { id: `${preset}-${Date.now()}`, ...presets[preset] };
+}
+
+const CALENDAR_DAYS = [
+  { d: 18, w: "日" }, { d: 19, w: "一" }, { d: 20, w: "二" }, { d: 21, w: "三" },
+  { d: 22, w: "四" }, { d: 23, w: "五" }, { d: 24, w: "六" },
+];
+
+const WEEK_TREND = {
+  activity: [{ day: "14", v: 2.3 }, { day: "15", v: 2.6 }, { day: "16", v: 2.8 }, { day: "17", v: 2.9 }, { day: "18", v: 2.6 }, { day: "19", v: 2.4 }, { day: "20", v: 3.6, today: true }],
+  sleep: [{ day: "14", v: 12.1 }, { day: "15", v: 12.4 }, { day: "16", v: 12.0 }, { day: "17", v: 11.8 }, { day: "18", v: 12.6 }, { day: "19", v: 12.9 }, { day: "20", v: 13.4, today: true }],
+  temp: [{ day: "14", v: 38.4 }, { day: "15", v: 38.5 }, { day: "16", v: 38.5 }, { day: "17", v: 38.7 }, { day: "18", v: 38.6 }, { day: "19", v: 38.5 }, { day: "20", v: 38.6, today: true }],
+  weight: [{ day: "14", v: 4.18 }, { day: "15", v: 4.19 }, { day: "16", v: 4.20 }, { day: "17", v: 4.20 }, { day: "18", v: 4.21 }, { day: "19", v: 4.20 }, { day: "20", v: 4.20, today: true }],
+  mood: [{ day: "14", v: 90 }, { day: "15", v: 88 }, { day: "16", v: 85 }, { day: "17", v: 82 }, { day: "18", v: 84 }, { day: "19", v: 86 }, { day: "20", v: 88, today: true }],
+};
+const TREND_TABS = [
+  { key: "activity", label: "活动", unit: "小时/天", avgLabel: "平均活动时长" },
+  { key: "sleep", label: "睡眠", unit: "小时/天", avgLabel: "平均睡眠时长" },
+  { key: "temp", label: "体温", unit: "°C", avgLabel: "平均体温" },
+  { key: "weight", label: "体重", unit: "kg", avgLabel: "平均体重" },
+  { key: "mood", label: "情绪", unit: "分", avgLabel: "平均情绪指数" },
+];
+
+const ALERT = {
+  level: "中风险", metric: "活动量下降", duration: "3天", change: "较平时下降32%",
+  causes: ["肠胃不适", "季节变化影响", "情绪压力"],
+  actions: ["观察饮食和排便情况", "适当增加互动和陪伴时间", "如持续异常，建议咨询宠物医生"],
+};
+
+const PERSONALITY = {
+  type: "小公主型",
+  tagline: "温柔敏感，喜欢安静的陪伴，最依赖主人的关注",
+  traits: ["温柔", "敏感", "傲娇", "胆小"],
+  likes: [{ icon: "🐾", label: "被抚摸" }, { icon: "🧶", label: "玩逗猫棒" }, { icon: "🌙", label: "晚上活动" }],
+  fears: [{ icon: "🧹", label: "吸尘器" }, { icon: "👤", label: "陌生人" }, { icon: "🔊", label: "大声喧哗" }],
+};
+
+const STOOL_RECORDS = [
+  { time: "今天 08:12", status: "软便", note: "颜色正常，量偏少" },
+  { time: "昨天 20:30", status: "软便", note: "略稀" },
+  { time: "昨天 07:50", status: "正常", note: "" },
+];
+const DIET_RECORDS = [
+  { time: "今天 07:30", food: "主食罐头", amount: "80g" },
+  { time: "昨天 19:10", food: "干粮", amount: "35g" },
+];
+const BEHAVIOR_FEED = [
+  { time: "15:32", text: "检测到舔毛/舔屁股动作较平时增加" },
+  { time: "13:10", text: "午后长时间静卧，活动量偏低" },
+  { time: "09:05", text: "早晨活跃玩耍 12 分钟" },
+];
+const HEALTH_RECORDS = [
+  { date: "2026.03.02", type: "疫苗", title: "猫三联疫苗（第3针）", place: "City宠物医院", icon: Syringe },
+  { date: "2025.11.18", type: "体检", title: "年度体检 · 各项指标正常", place: "City宠物医院", icon: Stethoscope },
+  { date: "2025.06.10", type: "驱虫", title: "体内外驱虫", place: "居家", icon: Check },
+];
+const FAMILY = [
+  { name: "我", role: "主人 · 管理员", avatar: "🧑" },
+  { name: "林晓", role: "家庭成员", avatar: "👩" },
+  { name: "爸爸", role: "家庭成员", avatar: "👨" },
+];
+const NOTIFS = [
+  { icon: "⚠️", title: "健康预警", desc: "活动量连续3天下降32%", time: "10分钟前" },
+  { icon: "🔋", title: "设备电量", desc: "智能项圈电量78%，运行正常", time: "2小时前" },
+  { icon: "📋", title: "AI日报已生成", desc: "今日健康报告已更新，点击查看", time: "今天 08:00" },
+];
+const CAMERAS = [
+  { id: "living", name: "客厅摄像头", online: true, detect: true },
+  { id: "bedroom", name: "卧室摄像头", online: true, detect: false },
+  { id: "balcony", name: "阳台摄像头", online: false, detect: false },
+];
+const HELP_FAQ = [
+  { q: "如何更换项圈电池 / 充电？", a: "项圈采用磁吸式充电底座，满电可使用约7天，低于20%电量App会自动提醒。" },
+  { q: "项圈可以佩戴多大的宠物？", a: "颈围支持19cm-45cm可调节，适合大部分猫咪及中大型犬。" },
+  { q: "数据多久同步一次？", a: "项圈通过蓝牙每15分钟自动同步一次数据，也可以在设备页手动同步。" },
+];
+const DEVICE_FAQ = [
+  { q: "项圈进水了怎么办？", a: "项圈达到IPX7级防水，日常洗澡、下雨无需摘下，长时间泡水建议先摘下。" },
+  { q: "佩戴检测不准确怎么办？", a: "请确认项圈贴合宠物颈部且传感器无遮挡，可在设备设置中重新校准。" },
+  { q: "更换宠物后如何重新绑定？", a: '在"设备设置-解绑设备"中操作，再重新扫描绑定新的宠物档案即可。' },
+];
+
+/* ============================== SHARED UI ============================== */
+function StatusBar() {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 22px 2px", fontSize: 13, fontWeight: 600, color: C.text, position: "relative", zIndex: 310 }}>
+      <span>9:41</span>
+      <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
+        <Wifi size={13} /><BatteryMedium size={16} />
+      </div>
+    </div>
+  );
+}
+
+function ScoreRing({ value, size = 108 }) {
+  const r = 46, c = 2 * Math.PI * r, pct = Math.min(100, value) / 100;
+  return (
+    <svg width={size} height={size} viewBox="0 0 108 108">
+      <defs>
+        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#3FC08C" />
+          <stop offset="100%" stopColor="#0B7F54" />
+        </linearGradient>
+      </defs>
+      <circle cx="54" cy="54" r={r} fill="none" stroke="rgba(10,10,11,0.06)" strokeWidth="10" />
+      <circle cx="54" cy="54" r={r} fill="none" stroke="url(#ringGrad)" strokeWidth="10"
+        strokeDasharray={c} strokeDashoffset={c * (1 - pct)} strokeLinecap="round" transform="rotate(-90 54 54)" />
+    </svg>
+  );
+}
+
+function Toast({ text }) {
+  if (!text) return null;
+  return (
+    <div style={{
+      position: "absolute", bottom: 108, left: "50%", transform: "translateX(-50%)",
+      background: C.primary, color: "#fff", borderRadius: 999, padding: "10px 18px",
+      boxShadow: "0 8px 22px rgba(10,10,11,0.26)", fontSize: 12.5, fontWeight: 500,
+      zIndex: 400, whiteSpace: "nowrap",
+    }}>
+      {text}
+    </div>
+  );
+}
+
+function Badge({ children, tone = "default" }) {
+  const tones = {
+    default: { bg: C.sageTint, color: C.sage },
+    warn: { bg: C.warnTint, color: C.warn },
+    danger: { bg: C.dangerTint, color: C.danger },
+    gold: { bg: C.goldTint, color: C.gold },
+    dark: { bg: "rgba(10,10,11,0.06)", color: C.sub },
+  };
+  const t = tones[tone];
+  return (
+    <span style={{ background: t.bg, color: t.color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>
+      {children}
+    </span>
+  );
+}
+
+function ScreenHeader({ title, onBack, right }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", padding: "8px 18px 14px", gap: 8 }}>
+      {onBack && (
+        <button onClick={onBack} style={{ ...glass(14, { padding: 7 }), border: `1px solid ${C.glassBorder}`, cursor: "pointer", display: "flex" }}>
+          <ChevronLeft size={18} color={C.text} />
+        </button>
+      )}
+      <div style={{ fontSize: 19, fontWeight: 800, color: C.text, flex: 1, letterSpacing: -0.3, textAlign: onBack ? "center" : "left", marginRight: onBack ? 32 : 0 }}>
+        {title}
+      </div>
+      {right}
+    </div>
+  );
+}
+
+function Toggle({ on, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      width: 44, height: 26, borderRadius: 20, border: "none", cursor: "pointer",
+      background: on ? `linear-gradient(150deg,#17B77B,#0B7F54)` : "rgba(10,10,11,0.14)",
+      position: "relative", flexShrink: 0, transition: "background .18s",
+    }}>
+      <span style={{
+        position: "absolute", top: 2.5, left: on ? 20 : 2.5, width: 21, height: 21, borderRadius: "50%",
+        background: "#fff", transition: "left .18s", boxShadow: "0 2px 5px rgba(0,0,0,0.25)",
+      }} />
+    </button>
+  );
+}
+
+function Segmented({ options, value, onChange, width }) {
+  const idx = Math.max(0, options.findIndex((o) => o.key === value));
+  const n = options.length;
+  return (
+    <div style={{
+      position: "relative", display: "flex", gap: 3, width, padding: 3, borderRadius: 12,
+      background: "rgba(10,10,11,0.05)", border: `1px solid ${C.hair}`,
+      boxShadow: "inset 0 1px 3px rgba(10,10,11,0.06)",
+    }}>
+      {/* liquid slider — glides between segments instead of hard-switching */}
+      <div style={{
+        position: "absolute", top: 3, bottom: 3, left: `calc(3px + ${idx} * ((100% - 6px) / ${n}))`,
+        width: `calc((100% - 6px) / ${n})`, borderRadius: 9,
+        background: "linear-gradient(160deg,rgba(255,255,255,0.98),rgba(255,255,255,0.72))",
+        backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        boxShadow: "0 2px 10px rgba(10,10,11,0.12), inset 0 1px 0 rgba(255,255,255,1)",
+        border: "1px solid rgba(255,255,255,0.8)",
+        transition: "left .34s cubic-bezier(.32,.72,0,1)",
+      }} />
+      {options.map((o) => (
+        <button key={o.key} onClick={() => onChange(o.key)} style={{
+          position: "relative", zIndex: 1, flex: 1, padding: "7px 10px", borderRadius: 9,
+          border: "none", cursor: "pointer", whiteSpace: "nowrap", background: "transparent",
+          color: value === o.key ? C.text : C.sub,
+          fontWeight: value === o.key ? 700 : 500, fontSize: 12.5,
+          transition: "color .24s ease",
+        }}>{o.label}</button>
+      ))}
+    </div>
+  );
+}
+
+function GlassSheet({ title, onClose, children }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, zIndex: 300, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(10,10,11,0.28)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }} />
+      <div style={{
+        position: "relative", maxHeight: "82%", ...frost(28), borderBottomLeftRadius: 0, borderBottomRightRadius: 0,
+        display: "flex", flexDirection: "column", overflow: "hidden",
+        animation: "none",
+      }}>
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 10 }}>
+          <div style={{ width: 36, height: 4.5, borderRadius: 4, background: "rgba(10,10,11,0.16)" }} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", padding: "10px 18px 12px" }}>
+          <div style={{ fontSize: 16.5, fontWeight: 800, color: C.text, flex: 1 }}>{title}</div>
+          <button onClick={onClose} style={{ background: "rgba(10,10,11,0.06)", border: "none", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            <X size={15} color={C.sub} />
+          </button>
+        </div>
+        <div style={{ overflowY: "auto", padding: "0 18px 26px" }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function SheetRow({ icon: Icon, label, right, onClick, first }) {
+  return (
+    <button onClick={onClick} style={{
+      width: "100%", display: "flex", alignItems: "center", padding: "13px 4px",
+      borderTop: first ? "none" : `1px solid ${C.hair}`, background: "none", border: "none",
+      cursor: onClick ? "pointer" : "default", textAlign: "left",
+    }}>
+      {Icon && <Icon size={17} color={C.text} style={{ marginRight: 12 }} />}
+      <div style={{ flex: 1, fontSize: 13.5, color: C.text, fontWeight: 500 }}>{label}</div>
+      {right}
+    </button>
+  );
+}
+
+function Accordion({ items }) {
+  const [open, setOpen] = useState(null);
+  return (
+    <div>
+      {items.map((it, i) => (
+        <div key={i} style={{ borderTop: i ? `1px solid ${C.hair}` : "none", padding: "12px 2px" }}>
+          <button onClick={() => setOpen(open === i ? null : i)} style={{ width: "100%", display: "flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}>
+            <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: C.text }}>{it.q}</div>
+            <ChevronDown size={15} color={C.sub} style={{ transform: open === i ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
+          </button>
+          {open === i && <div style={{ fontSize: 12.5, color: C.sub, lineHeight: 1.7, marginTop: 8 }}>{it.a}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============================== HOME ============================== */
+function HomeScreen({ pet, goAlert, goCamera, toast, openSheet, unread, onPhoto }) {
+  const metrics = [
+    { key: "activity", label: "活动", value: pet.activity, icon: Activity },
+    { key: "sleep", label: "睡眠", value: pet.sleep, icon: Moon },
+    { key: "mood", label: "情绪", value: pet.mood, icon: Smile },
+    { key: "temp", label: "体温", value: pet.temp, icon: Thermometer },
+  ];
+  return (
+    <div style={{ padding: "0 16px 96px" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "10px 2px 16px" }}>
+        <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(150deg,#17B77B,#0B7F54)`, display: "flex", alignItems: "center", justifyContent: "center", marginRight: 8 }}>
+          <PawPrint size={16} color="#fff" />
+        </div>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 16.5, color: C.text, letterSpacing: -0.3 }}>Paw AI</div>
+          <div style={{ fontSize: 10.5, color: C.subtle }}>AI宠物健康管家</div>
+        </div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => openSheet("notifications")} style={{ ...glass(14, { width: 34, height: 34, padding: 0 }), border: `1px solid ${C.glassBorder}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative", marginRight: 8 }}>
+          <Bell size={16} color={C.text} />
+          {unread > 0 && <span style={{ position: "absolute", top: 6, right: 7, width: 7, height: 7, borderRadius: "50%", background: C.danger }} />}
+        </button>
+        <button onClick={() => openSheet("petSwitcher")} style={{ ...glass(14, { width: 34, height: 34, padding: 0 }), border: `1px solid ${C.glassBorder}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <Plus size={16} color={C.primaryDeep} />
+        </button>
+      </div>
+
+      <button onClick={() => openSheet("petSwitcher")} style={{ width: "100%", textAlign: "left", ...glass(20, { padding: 15 }), display: "flex", alignItems: "center", cursor: "pointer", border: `1px solid ${C.glassBorder}` }}>
+        <PetAvatar pet={pet} size={52} onUpload={onPhoto} />
+        <div style={{ marginLeft: 12, flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 15.5, color: C.text }}>{pet.name} {pet.sex}</div>
+          <div style={{ fontSize: 12, color: C.sub }}>{pet.species} · {pet.age}</div>
+        </div>
+        <Badge>● AI监测中</Badge>
+        <ChevronRight size={16} color={C.subtle} style={{ marginLeft: 4 }} />
+      </button>
+
+      <div style={{ ...glass(20, { padding: 18 }), marginTop: 12, display: "flex", alignItems: "center" }}>
+        <div style={{ position: "relative", width: 108, height: 108 }}>
+          <ScoreRing value={pet.healthIndex} />
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: C.text }}>{pet.healthIndex}</div>
+            <div style={{ fontSize: 11, color: C.subtle }}>/100</div>
+          </div>
+        </div>
+        <div style={{ marginLeft: 18, flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12.5, color: C.sub, marginBottom: 6 }}>健康指数 <Info size={13} /></div>
+          <div style={{ fontWeight: 600, color: C.sage, fontSize: 15 }}>{tagFor(pet.healthIndex)}</div>
+          <div style={{ fontSize: 12, color: C.subtle, marginTop: 2 }}>较昨日 ↑3</div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginTop: 12 }}>
+        {metrics.map((m) => {
+          const numeric = typeof m.value === "number";
+          return (
+            <div key={m.key} style={{ ...glass(16, { padding: "12px 4px" }), textAlign: "center" }}>
+              <m.icon size={15} color={C.primaryDeep} style={{ marginBottom: 4 }} />
+              <div style={{ fontSize: 14.5, fontWeight: 800, color: C.text }}>{m.value}</div>
+              <div style={{ fontSize: 10.5, color: C.subtle, marginTop: 2 }}>{m.label}</div>
+              {numeric && <div style={{ fontSize: 9.5, color: C.sage, marginTop: 2, fontWeight: 600 }}>{tagFor(m.value)}</div>}
+            </div>
+          );
+        })}
+      </div>
+
+      <button onClick={goAlert} style={{ width: "100%", textAlign: "left", ...glass(16, { padding: 12, background: C.warnTint }), display: "flex", alignItems: "center", gap: 10, marginTop: 12, cursor: "pointer", border: "1px solid rgba(181,119,42,0.18)" }}>
+        <AlertTriangle size={17} color={C.warn} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 12.5, color: C.text }}>健康预警：活动量连续下降</div>
+          <div style={{ fontSize: 10.5, color: C.sub }}>点击查看详情与建议</div>
+        </div>
+        <ChevronRight size={15} color={C.warn} />
+      </button>
+
+      <button onClick={goCamera} style={{ width: "100%", textAlign: "left", ...glass(20, { padding: 14 }), display: "flex", alignItems: "center", gap: 12, marginTop: 12, cursor: "pointer", border: `1px solid ${C.glassBorder}` }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: FEED.surface, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
+          <Camera size={17} color={FEED.accent} />
+          <span style={{ position: "absolute", top: 5, right: 5, width: 6, height: 6, borderRadius: "50%", background: C.danger }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 12.5, color: C.text }}>客厅摄像头 · 检测到{pet.name}的活动</div>
+          <div style={{ fontSize: 10.5, color: C.sub, marginTop: 2 }}>点击查看实时监测画面</div>
+        </div>
+        <ChevronRight size={15} color={C.subtle} />
+      </button>
+
+      <div style={{ ...glass(20, { padding: 16 }), marginTop: 12, display: "flex", gap: 12 }}>
+        <div style={{ width: 34, height: 34, borderRadius: "50%", background: `linear-gradient(150deg,#17B77B,#0B7F54)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Bot size={16} color="#fff" />
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 12.5, color: C.text, marginBottom: 4 }}>AI今日建议</div>
+          <div style={{ fontSize: 12, color: C.sub, lineHeight: 1.65 }}>
+            {pet.name}今天活动量比平时减少15%，建议晚上陪它玩耍10-15分钟。
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================== HEALTH ============================== */
+function HealthScreen({ pet, goAlert }) {
+  const [tab, setTab] = useState("report");
+  const [selDay, setSelDay] = useState(20);
+  const [trendMetric, setTrendMetric] = useState("activity");
+  const [range, setRange] = useState("周");
+  const [stool, setStool] = useState(STOOL_RECORDS);
+  const [diet, setDiet] = useState(DIET_RECORDS);
+  const [feed, setFeed] = useState(BEHAVIOR_FEED);
+
+  const tabs = [{ key: "report", label: "日报" }, { key: "trend", label: "趋势" }, { key: "behavior", label: "行为" }, { key: "diet", label: "饮食" }, { key: "stool", label: "排便" }];
+  const tData = WEEK_TREND[trendMetric];
+  const tMeta = TREND_TABS.find((t) => t.key === trendMetric);
+  const avg = (tData.reduce((a, b) => a + b.v, 0) / tData.length).toFixed(1);
+
+  return (
+    <div style={{ padding: "0 16px 96px" }}>
+      <ScreenHeader title="健康" />
+      <Segmented options={tabs} value={tab} onChange={setTab} width="100%" />
+      <div style={{ height: 14 }} />
+
+      {tab === "report" && (
+        <>
+          <div style={{ fontSize: 12.5, color: C.sub, marginBottom: 10 }}>2024年5月 ›</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+            {CALENDAR_DAYS.map((c) => (
+              <button key={c.d} onClick={() => setSelDay(c.d)} style={{ border: "none", background: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, width: 34 }}>
+                <span style={{ fontSize: 11, color: C.subtle }}>{c.w}</span>
+                <span style={{
+                  width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                  background: selDay === c.d ? C.primary : "transparent",
+                  color: selDay === c.d ? "#fff" : C.text, fontSize: 13, fontWeight: 700,
+                }}>{c.d}</span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ ...glass(18, { padding: 16 }) }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>今日健康报告</div>
+              <Badge>良好</Badge>
+            </div>
+            <div style={{ fontSize: 12.5, color: C.sub, marginTop: 8, lineHeight: 1.7 }}>{pet.name}今天整体状态良好，但有一些轻微变化需要注意～</div>
+          </div>
+
+          <div style={{ ...glass(18, {}), marginTop: 12, overflow: "hidden" }}>
+            {[{ icon: Activity, label: "活动", note: "较昨日 ↓15%", score: pet.activity }, { icon: Moon, label: "睡眠", note: "较昨日 ↑10%", score: pet.sleep }, { icon: Utensils, label: "饮食", note: "正常", score: 90 }, { icon: Smile, label: "情绪", note: "平稳", score: pet.mood }].map((r, i) => (
+              <div key={r.label} style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+                <div style={{ width: 30, height: 30, borderRadius: "50%", background: C.primaryTint, display: "flex", alignItems: "center", justifyContent: "center", marginRight: 10 }}><r.icon size={15} color={C.primaryDeep} /></div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{r.label}</div>
+                  <div style={{ fontSize: 10.5, color: C.subtle }}>{r.note}</div>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{r.score}<span style={{ fontSize: 10.5, color: C.subtle, fontWeight: 400 }}>/100</span></div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 6 }}>AI分析总结</div>
+            <div style={{ fontSize: 12.5, color: C.sub, lineHeight: 1.7 }}>{pet.name}今天活动量有所下降，可能是因为天气炎热，建议增加互动时间，并留意排便情况是否恢复正常。</div>
+          </div>
+
+          <button onClick={goAlert} style={{ width: "100%", marginTop: 14, ...glass(16, { padding: 12 }), color: C.warn, fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+            <AlertTriangle size={14} /> 查看健康预警详情
+          </button>
+        </>
+      )}
+
+      {tab === "trend" && (
+        <>
+          <div style={{ display: "flex", gap: 16, overflowX: "auto", marginBottom: 14, paddingBottom: 2 }}>
+            {TREND_TABS.map((t) => (
+              <button key={t.key} onClick={() => setTrendMetric(t.key)} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 13, whiteSpace: "nowrap", color: trendMetric === t.key ? C.primaryDeep : C.sub, fontWeight: trendMetric === t.key ? 700 : 500, borderBottom: trendMetric === t.key ? `2px solid ${C.primary}` : "2px solid transparent", paddingBottom: 6 }}>{t.label}</button>
+            ))}
+          </div>
+          <Segmented options={[{ key: "日", label: "日" }, { key: "周", label: "周" }, { key: "月", label: "月" }]} value={range} onChange={setRange} width={180} />
+          <div style={{ fontSize: 11.5, color: C.subtle, margin: "12px 0 4px" }}>5月14日 - 5月20日</div>
+
+          <div style={{ ...glass(18, { padding: 16 }) }}>
+            <div style={{ fontSize: 11.5, color: C.subtle }}>{tMeta.avgLabel}</div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, margin: "4px 0 12px" }}>
+              <span style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{avg}</span>
+              <span style={{ fontSize: 12, color: C.subtle }}>{tMeta.unit}</span>
+              <span style={{ fontSize: 11, color: C.sage, marginLeft: "auto", fontWeight: 600 }}>比上周 ↑12%</span>
+            </div>
+            <div style={{ width: "100%", marginTop: 4 }}>
+              <MiniBarChart data={tData} height={150} />
+            </div>
+          </div>
+
+          <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 6 }}>{tMeta.label}分析</div>
+            <div style={{ fontSize: 12.5, color: C.sub, lineHeight: 1.7 }}>{pet.name}的{tMeta.label}在周中下降，周末有所回升，建议保持规律的互动时间。</div>
+          </div>
+        </>
+      )}
+
+      {tab === "behavior" && (
+        <div style={{ ...glass(18, { padding: 16 }) }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text }}>今日行为动态</div>
+            <button onClick={() => setFeed([{ time: "刚刚", text: `检测到${pet.name}正在梳理毛发` }, ...feed])} style={{ border: "none", background: "none", color: C.primaryDeep, fontSize: 12, display: "flex", alignItems: "center", gap: 4, cursor: "pointer", fontWeight: 600 }}>
+              <RefreshCw size={12} /> 刷新
+            </button>
+          </div>
+          {feed.map((f, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, padding: "8px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+              <div style={{ fontSize: 11, color: C.subtle, width: 42, flexShrink: 0 }}>{f.time}</div>
+              <div style={{ fontSize: 12.5, color: C.text }}>{f.text}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "diet" && (
+        <div style={{ ...glass(18, { padding: 16 }) }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text }}>饮食记录</div>
+            <button onClick={() => setDiet([{ time: "刚刚", food: "湿粮", amount: "40g" }, ...diet])} style={{ border: "none", background: C.primaryTint, color: C.primaryDeep, fontSize: 12, borderRadius: 20, padding: "5px 11px", cursor: "pointer", fontWeight: 700 }}>+ 记录饮食</button>
+          </div>
+          {diet.map((d, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", padding: "9px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+              <Utensils size={14} color={C.primaryDeep} style={{ marginRight: 8 }} />
+              <div style={{ flex: 1 }}><div style={{ fontSize: 13, color: C.text, fontWeight: 600 }}>{d.food}</div><div style={{ fontSize: 10.5, color: C.subtle }}>{d.time}</div></div>
+              <div style={{ fontSize: 13, color: C.sub }}>{d.amount}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "stool" && (
+        <div style={{ ...glass(18, { padding: 16 }) }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text }}>排便记录</div>
+            <button onClick={() => setStool([{ time: "刚刚", status: "正常", note: "" }, ...stool])} style={{ border: "none", background: C.primaryTint, color: C.primaryDeep, fontSize: 12, borderRadius: 20, padding: "5px 11px", cursor: "pointer", fontWeight: 700 }}>+ 记录排便</button>
+          </div>
+          {stool.map((s, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", padding: "9px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+              <Badge tone={s.status === "正常" ? "default" : "warn"}>{s.status}</Badge>
+              <div style={{ marginLeft: 10, flex: 1 }}><div style={{ fontSize: 12.5, color: C.text }}>{s.note || "—"}</div><div style={{ fontSize: 10.5, color: C.subtle }}>{s.time}</div></div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================== AI ============================== */
+function getAIReply(input, petName) {
+  const t = input;
+  if (/舔|肛门|屁股/.test(t)) return `根据${petName}近期的行为数据分析，舔屁股的频率比过去7天增加了60%，可能与肛门腺、软便或轻微肠胃不适有关，建议先观察排便情况，必要时线下检查肛门腺。`;
+  if (/活动|运动|懒|不爱动/.test(t)) return `${petName}最近3天活动量持续偏低，较平时下降约32%，天气变化和轻微肠胃不适都可能是原因，建议今晚增加10-15分钟互动玩耍，并留意精神状态。`;
+  if (/吃|食欲|饮食|挑食/.test(t)) return `${petName}近期饮食量与平时基本一致，暂无明显异常。如果发现食欲明显下降或饮水量突然变化，建议尽快记录并咨询医生。`;
+  if (/睡|失眠|睡眠/.test(t)) return `${petName}这周的睡眠时长比平时略有增加，属于正常波动，通常与活动量下降会同时出现，不用过于担心。`;
+  if (/预警|风险/.test(t)) return `这次预警是因为${petName}连续3天活动量下降了32%，风险等级为中风险，主要建议是观察饮食排便、增加陪伴，如持续无改善建议就医。`;
+  if (/健康|怎么样|状态/.test(t)) return `${petName}目前健康指数良好，只是这两天活动量略有下降，建议今晚多陪它玩一会儿，明天再观察一下变化趋势。`;
+  return `已经在看${petName}最近的行为和健康数据了～可以告诉我具体想了解哪方面，比如活动、饮食、睡眠或者某个异常行为吗？`;
+}
+const VET_SUGGESTION = "已为你生成就医建议清单：\n✓ 记录近3天排便性状（软便 / 正常 / 腹泻）\n✓ 检查肛门附近是否有红肿或异物\n✓ 观察是否有拖尾巴、频繁回头舔舐的动作\n✓ 若3天内未见改善，建议尽快线下就医\n\n需要我帮你找一下附近的宠物医院吗？";
+
+function AIScreen({ pet, initialMessages, consumeInitial }) {
+  const [messages, setMessages] = useState(initialMessages);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const endRef = useRef(null);
+
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, typing]);
+  useEffect(() => { if (consumeInitial) consumeInitial(); /* eslint-disable-next-line */ }, []);
+
+  const send = (text) => {
+    if (!text.trim()) return;
+    setMessages((m) => [...m, { role: "user", text }]);
+    setInput("");
+    setTyping(true);
+    setTimeout(() => {
+      setTyping(false);
+      setMessages((m) => [...m, { role: "assistant", text: getAIReply(text, pet.name), action: /舔|肛门|屁股|预警/.test(text) ? "生成就医建议" : null }]);
+    }, 850);
+  };
+  const handleAction = () => {
+    setTyping(true);
+    setTimeout(() => { setTyping(false); setMessages((m) => [...m, { role: "assistant", text: VET_SUGGESTION }]); }, 700);
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <ScreenHeader title="AI助手" />
+      <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+        {messages.map((m, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", marginBottom: 10 }}>
+            <div style={{
+              maxWidth: "82%", padding: "10px 13px", borderRadius: 17, fontSize: 13, lineHeight: 1.7, whiteSpace: "pre-line",
+              background: m.role === "user"
+                ? "linear-gradient(150deg,#2A2B2E,#0A0A0B)"
+                : "linear-gradient(160deg,rgba(255,255,255,0.78),rgba(255,255,255,0.48))",
+              backdropFilter: m.role === "user" ? "none" : "blur(24px) saturate(180%)",
+              WebkitBackdropFilter: m.role === "user" ? "none" : "blur(24px) saturate(180%)",
+              color: m.role === "user" ? "#fff" : C.text,
+              border: m.role === "user" ? "none" : `1px solid ${C.glassBorder}`,
+              boxShadow: m.role === "user"
+                ? "0 6px 18px rgba(10,10,11,0.26), inset 0 1px 0 rgba(255,255,255,0.16)"
+                : "0 6px 22px rgba(10,10,11,0.08), inset 0 1px 0 rgba(255,255,255,0.95)",
+              borderBottomRightRadius: m.role === "user" ? 4 : 17,
+              borderBottomLeftRadius: m.role === "user" ? 17 : 4,
+            }}>
+              {m.text}
+              {m.action && (
+                <div style={{ marginTop: 10 }}>
+                  <button onClick={handleAction} style={{ background: "rgba(255,255,255,0.9)", color: C.primaryDeep, border: "none", borderRadius: 20, padding: "7px 14px", fontSize: 12.5, fontWeight: 700, cursor: "pointer" }}>{m.action}</button>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        {typing && (
+          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 10 }}>
+            <div style={{ ...glass(17, { padding: "10px 16px" }), fontSize: 13, color: C.sub }}>对方正在输入…</div>
+          </div>
+        )}
+        <div ref={endRef} />
+      </div>
+      <div style={{ display: "flex", gap: 8, padding: "10px 16px 14px", alignItems: "center",
+        ...frost(0), borderRadius: 0, borderLeft: "none", borderRight: "none", borderBottom: "none" }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") send(input); }} placeholder="输入你的问题…"
+          style={{ flex: 1, border: "1px solid rgba(255,255,255,0.7)", background: "rgba(255,255,255,0.55)",
+            backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            borderRadius: 999, padding: "10px 16px", fontSize: 13, outline: "none", color: C.text,
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)" }} />
+        <button onClick={() => send(input)} style={{ background: C.primary, border: "none", borderRadius: "50%", width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, boxShadow: "0 4px 14px rgba(10,10,11,0.24)" }}>
+          <Send size={16} color="#fff" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================== DEVICE ============================== */
+function DeviceScreen({ toast, openSheet, openOverlay }) {
+  const [connected, setConnected] = useState(true);
+  const [wornCheck, setWornCheck] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [syncedText, setSyncedText] = useState("刚刚同步");
+  const [battery] = useState(78);
+
+  const doSync = () => {
+    setSyncing(true); setSyncedText("同步中…");
+    setTimeout(() => { setSyncing(false); setSyncedText("刚刚同步"); toast("数据同步完成"); }, 1100);
+  };
+
+  return (
+    <div style={{ padding: "0 16px 96px" }}>
+      <ScreenHeader title="设备" />
+      <div style={{ ...glass(20, { padding: 16 }) }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 52, height: 52, borderRadius: 16, background: C.primaryTint, display: "flex", alignItems: "center", justifyContent: "center" }}><Watch size={24} color={C.primaryDeep} /></div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 14.5, color: C.text }}>Paw AI 智能项圈</div>
+            <div style={{ fontSize: 11.5, color: connected ? C.primaryDeep : C.subtle, marginTop: 2 }}>{connected ? "● 已连接" : "○ 未连接"}</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14, paddingTop: 14, borderTop: `1px solid ${C.hair}` }}>
+          <div style={{ fontSize: 13, color: C.text, fontWeight: 600 }}>电量 {battery}%</div>
+          <Toggle on={connected} onClick={() => { setConnected(!connected); toast(!connected ? "已连接设备" : "已断开设备"); }} />
+        </div>
+      </div>
+
+      <div style={{ ...glass(18, {}), marginTop: 12, padding: "0 16px" }}>
+        <SheetRow first icon={Camera} label="家庭摄像头联动" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openOverlay("cameraList")} />
+        <SheetRow icon={Settings} label="设备设置" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openSheet("deviceSettings")} />
+        <SheetRow icon={ShieldCheck} label="佩戴检测" right={<Toggle on={wornCheck} onClick={() => setWornCheck(!wornCheck)} />} />
+        <SheetRow icon={RefreshCw} label="数据同步" right={<span onClick={doSync} style={{ fontSize: 12.5, color: syncing ? C.warn : C.sub, fontWeight: 600, cursor: "pointer" }}>{syncedText}</span>} />
+        <SheetRow icon={Info} label="固件更新" right={<span style={{ fontSize: 12.5, color: C.subtle }}>V1.2.3</span>} />
+        <SheetRow icon={HelpCircle} label="设备帮助" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openSheet("deviceHelp")} />
+      </div>
+    </div>
+  );
+}
+
+/* ============================== PROFILE ============================== */
+function ProfileScreen({ pet, openSheet, openOverlay, toast }) {
+  return (
+    <div style={{ padding: "0 16px 96px" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "10px 2px 16px" }}>
+        <div style={{ fontSize: 19, fontWeight: 800, color: C.text }}>我的</div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => openOverlay("petProfile")} style={{ ...glass(14, { padding: "6px 12px" }), border: `1px solid ${C.glassBorder}`, display: "flex", alignItems: "center", gap: 4, color: C.sub, fontSize: 12, cursor: "pointer", fontWeight: 600 }}>
+          <Edit3 size={13} /> 编辑资料
+        </button>
+      </div>
+      <button onClick={() => openOverlay("petProfile")} style={{ width: "100%", textAlign: "left", ...glass(20, { padding: 16 }), display: "flex", alignItems: "center", gap: 12, cursor: "pointer", border: `1px solid ${C.glassBorder}` }}>
+        <PetAvatar pet={pet} size={56} editable={false} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: 16, color: C.text }}>{pet.name}</div>
+          <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{pet.species} · {pet.age} · {pet.weight}</div>
+        </div>
+        <ChevronRight size={16} color={C.subtle} />
+      </button>
+
+      <div style={{ ...glass(18, {}), marginTop: 14, padding: "0 16px" }}>
+        <SheetRow first icon={PawPrint} label="宠物档案" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openOverlay("petProfile")} />
+        <SheetRow icon={HeartPulse} label="健康档案" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openOverlay("healthRecords")} />
+        <SheetRow icon={Crown} label="性格画像" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openOverlay("personality")} />
+        <SheetRow icon={Users} label="家庭成员" right={<span style={{ fontSize: 12, color: C.subtle, marginRight: 6 }}>3人</span>} onClick={() => openSheet("family")} />
+        <SheetRow icon={Bell} label="提醒设置" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openSheet("reminders")} />
+        <SheetRow icon={ShieldCheck} label="权限管理" right={<Badge tone="gold">AI高级版</Badge>} onClick={() => openSheet("permissions")} />
+        <SheetRow icon={HelpCircle} label="帮助与反馈" right={<ChevronRight size={16} color={C.subtle} />} onClick={() => openSheet("help")} />
+      </div>
+    </div>
+  );
+}
+
+/* ============================== FULL OVERLAYS ============================== */
+function HeroHeader({ title, onBack }) {
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ position: "absolute", top: -40, left: -40, right: -40, height: 160, backgroundImage: `radial-gradient(at 30% 20%, rgba(24,179,126,0.28), transparent 60%), radial-gradient(at 80% 0%, rgba(184,147,62,0.18), transparent 55%)`, filter: "blur(6px)", pointerEvents: "none" }} />
+      <ScreenHeader title={title} onBack={onBack} />
+    </div>
+  );
+}
+
+function AlertDetailScreen({ pet, onBack, onConsultAI }) {
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title="预警详情" onBack={onBack} />
+      <div style={{ ...glass(20, { padding: 16 }) }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 40, height: 40, borderRadius: "50%", background: C.warnTint, display: "flex", alignItems: "center", justifyContent: "center" }}><AlertTriangle size={20} color={C.warn} /></div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: C.text, flex: 1 }}>健康预警</div>
+          <Badge tone="warn">{ALERT.level}</Badge>
+        </div>
+        <div style={{ fontSize: 12.5, color: C.sub, marginTop: 10, lineHeight: 1.7 }}>{pet.name}连续3天活动量显著下降，可能存在健康隐患。</div>
+      </div>
+
+      <div style={{ ...glass(18, { padding: 4 }), marginTop: 12 }}>
+        {[["预警指标", ALERT.metric], ["风险等级", ALERT.level], ["持续时间", ALERT.duration], ["数据变化", ALERT.change]].map(([k, v], i) => (
+          <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "12px 12px", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+            <span style={{ fontSize: 13, color: C.sub }}>{k}</span><span style={{ fontSize: 13, color: C.text, fontWeight: 700 }}>{v}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 8 }}>可能原因</div>
+        {ALERT.causes.map((c) => <div key={c} style={{ fontSize: 12.5, color: C.sub, marginBottom: 4 }}>• {c}</div>)}
+      </div>
+      <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 8 }}>建议措施</div>
+        {ALERT.actions.map((a, i) => <div key={a} style={{ display: "flex", gap: 6, fontSize: 12.5, color: C.sub, marginBottom: 4 }}><span>{i + 1}.</span><span>{a}</span></div>)}
+      </div>
+
+      <button onClick={onConsultAI} style={{ ...pill({ width: "100%", padding: 15, fontWeight: 600, fontSize: 14, marginTop: 16 }) }}>咨询AI助手</button>
+    </div>
+  );
+}
+
+function PersonalityScreen({ pet, onBack }) {
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title={`${pet.name}的性格画像`} onBack={onBack} />
+      <div style={{ ...glass(20, { padding: 18 }), display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><Crown size={16} color={C.gold} /><span style={{ fontWeight: 800, fontSize: 17, color: C.text }}>{PERSONALITY.type}</span></div>
+          <div style={{ fontSize: 12, color: C.sub, marginTop: 6, lineHeight: 1.7 }}>{PERSONALITY.tagline}</div>
+        </div>
+        <PetAvatar pet={pet} size={70} editable={false} />
+      </div>
+      <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 10 }}>性格特点</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{PERSONALITY.traits.map((t) => <Badge key={t}>{t}</Badge>)}</div>
+      </div>
+      <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 12 }}>喜欢的事</div>
+        <div style={{ display: "flex", gap: 20 }}>{PERSONALITY.likes.map((l) => (
+          <div key={l.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 46, height: 46, borderRadius: "50%", background: C.primaryTint, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{l.icon}</div>
+            <span style={{ fontSize: 11.5, color: C.sub }}>{l.label}</span>
+          </div>
+        ))}</div>
+      </div>
+      <div style={{ ...glass(18, { padding: 16 }), marginTop: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13.5, color: C.text, marginBottom: 12 }}>害怕的事</div>
+        <div style={{ display: "flex", gap: 20 }}>{PERSONALITY.fears.map((f) => (
+          <div key={f.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 46, height: 46, borderRadius: "50%", background: C.dangerTint, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 }}>{f.icon}</div>
+            <span style={{ fontSize: 11.5, color: C.sub }}>{f.label}</span>
+          </div>
+        ))}</div>
+      </div>
+    </div>
+  );
+}
+
+function PetProfileScreen({ pet, onBack, onSave, toast, onPhoto }) {
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(pet.name);
+  const [weight, setWeight] = useState(pet.weight);
+
+  const save = () => { onSave({ name, weight }); setEditing(false); toast("资料已更新"); };
+  const inputStyle = { width: "100%", border: `1px solid ${C.glassBorder}`, background: "rgba(255,255,255,0.7)", borderRadius: 12, padding: "9px 12px", fontSize: 13, color: C.text, outline: "none", marginTop: 4 };
+
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title="宠物档案" onBack={onBack} right={
+        <button onClick={() => (editing ? save() : setEditing(true))} style={{ background: "none", border: "none", color: C.primaryDeep, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>{editing ? "保存" : "编辑"}</button>
+      } />
+      <div style={{ ...glass(20, { padding: 18 }), display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <PetAvatar pet={pet} size={78} onUpload={onPhoto} />
+        {editing ? (
+          <input value={name} onChange={(e) => setName(e.target.value)} style={{ ...inputStyle, marginTop: 12, textAlign: "center", fontWeight: 700, fontSize: 15 }} />
+        ) : (
+          <div style={{ fontWeight: 800, fontSize: 17, color: C.text, marginTop: 10 }}>{pet.name} {pet.sex}</div>
+        )}
+        <div style={{ fontSize: 12, color: C.sub, marginTop: 4 }}>{pet.species}</div>
+      </div>
+
+      <div style={{ ...glass(18, { padding: 4 }), marginTop: 12 }}>
+        {[["年龄", pet.age], ["体重", editing ? null : pet.weight], ["出生日期", pet.birth], ["芯片编号", pet.chip]].map(([k, v], i) => (
+          <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 12px", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+            <span style={{ fontSize: 13, color: C.sub }}>{k}</span>
+            {k === "体重" && editing ? (
+              <input value={weight} onChange={(e) => setWeight(e.target.value)} style={{ ...inputStyle, width: 100, marginTop: 0, textAlign: "right" }} />
+            ) : (
+              <span style={{ fontSize: 13, color: C.text, fontWeight: 700 }}>{v}</span>
+            )}
+          </div>
+        ))}
+      </div>
+      {editing && <div style={{ fontSize: 11.5, color: C.subtle, marginTop: 10, textAlign: "center" }}>修改后点击右上角"保存"即可更新</div>}
+    </div>
+  );
+}
+
+function HealthRecordsScreen({ pet, onBack, toast }) {
+  const [records, setRecords] = useState(HEALTH_RECORDS);
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title="健康档案" onBack={onBack} />
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <button onClick={() => { setRecords([{ date: "今天", type: "记录", title: "手动添加的健康记录", place: "居家", icon: Check }, ...records]); toast("已添加健康记录"); }} style={{ border: "none", background: C.primaryTint, color: C.primaryDeep, fontSize: 12, borderRadius: 20, padding: "6px 12px", cursor: "pointer", fontWeight: 700 }}>+ 添加记录</button>
+      </div>
+      <div style={{ ...glass(18, {}), padding: "0 16px" }}>
+        {records.map((r, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, padding: "14px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+            <div style={{ width: 34, height: 34, borderRadius: "50%", background: C.primaryTint, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><r.icon size={16} color={C.primaryDeep} /></div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{r.title}</span>
+                <Badge tone="dark">{r.type}</Badge>
+              </div>
+              <div style={{ fontSize: 11, color: C.subtle, marginTop: 4 }}>{r.date} · {r.place}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============================== HOME CAMERA LINKAGE ==============================
+   Same light glass system as every other screen — no separate dark theme. Only
+   the video viewport itself is dark, because footage is dark content, the way a
+   photo sits dark inside a light photos app. The emerald accent, glass(), Toggle
+   and Badge primitives are all shared, so this reads as one continuous product.
+=================================================================================== */
+const FEED = {
+  surface: "linear-gradient(180deg,#2A2B2E 0%,#0D0E10 100%)",
+  onFeed: "rgba(255,255,255,0.92)",
+  onFeedSub: "rgba(255,255,255,0.5)",
+  accent: "#3FC08C",
+};
+
+function CameraListScreen({ onBack, onOpenCamera, toast }) {
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title="家庭摄像头" onBack={onBack} />
+      <div style={{ fontSize: 12, color: C.sub, margin: "0 4px 14px", lineHeight: 1.65 }}>
+        联动家里的摄像头，AI 会自动识别画面中的宠物活动、姿态与异常行为。
+      </div>
+      {CAMERAS.map((c) => (
+        <button key={c.id} onClick={() => (c.online ? onOpenCamera(c.id) : toast("摄像头离线，无法查看"))} style={{
+          width: "100%", textAlign: "left", ...glass(18, { padding: 13 }), display: "flex",
+          alignItems: "center", gap: 12, marginBottom: 10, cursor: "pointer",
+        }}>
+          <div style={{
+            width: 58, height: 44, borderRadius: 11, flexShrink: 0, position: "relative", overflow: "hidden",
+            background: c.online ? FEED.surface : "rgba(10,10,11,0.06)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            {c.online
+              ? <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(ellipse 60% 50% at 50% 62%, rgba(226,228,232,0.34), transparent 72%)" }} />
+              : <Camera size={15} color={C.subtle} />}
+            {c.online && c.detect && <span style={{ position: "absolute", left: 6, top: 6, width: 6, height: 6, borderRadius: "50%", background: FEED.accent }} />}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: C.text }}>{c.name}</div>
+            <div style={{ fontSize: 11, color: c.online ? (c.detect ? C.sage : C.sub) : C.subtle, marginTop: 3 }}>
+              {c.online ? (c.detect ? "● 检测到宠物活动" : "○ 在线 · 暂无活动") : "○ 离线"}
+            </div>
+          </div>
+          {c.online ? <ChevronRight size={16} color={C.subtle} /> : <Badge tone="dark">离线</Badge>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CameraMonitorScreen({ pet, cameraId, setCameraId, onBack, onGoAI, toast }) {
+  const camera = CAMERAS.find((c) => c.id === cameraId) || CAMERAS[0];
+  const [recording, setRecording] = useState(true);
+  const [faceId, setFaceId] = useState(true);
+  const [skeleton, setSkeleton] = useState(true);
+  const [night, setNight] = useState(false);
+  const [alertOn, setAlertOn] = useState(true);
+  const [showAnomaly, setShowAnomaly] = useState(false);
+  const [confidence] = useState((95 + Math.random() * 4).toFixed(1));
+  const detected = camera.detect;
+
+  return (
+    <div style={{ padding: "0 16px 30px" }}>
+      <HeroHeader title="实时监测画面" onBack={onBack} />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <Camera size={14} color={C.primaryDeep} />
+        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, flex: 1 }}>{camera.name}</div>
+        <div style={{ display: "flex", gap: 5 }}>
+          {CAMERAS.map((c) => (
+            <button key={c.id} onClick={() => (c.online ? setCameraId(c.id) : toast("摄像头离线"))} style={{
+              width: 7, height: 7, borderRadius: "50%", border: "none", padding: 0, cursor: "pointer",
+              background: c.id === cameraId ? C.primary : "rgba(10,10,11,0.16)",
+            }} />
+          ))}
+        </div>
+      </div>
+
+      {/* video viewport — the only dark surface, because footage is dark content */}
+      <div style={{
+        position: "relative", borderRadius: 20, overflow: "hidden", height: 290,
+        background: camera.online ? FEED.surface : "rgba(10,10,11,0.04)",
+        border: `1px solid ${C.glassBorder}`, boxShadow: C.shadow,
+        filter: night ? "grayscale(0.3) sepia(0.35) hue-rotate(72deg) brightness(1.12) contrast(1.08)" : "none",
+      }}>
+        {!camera.online ? (
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <Camera size={24} color={C.subtle} />
+            <div style={{ fontSize: 12.5, color: C.sub }}>摄像头离线</div>
+          </div>
+        ) : (
+          <>
+            <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(ellipse 58% 44% at 50% 60%, rgba(226,228,232,0.28), transparent 72%)" }} />
+
+            <div style={{ position: "absolute", left: 10, top: 10, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5, background: recording ? "rgba(184,74,72,0.9)" : "rgba(255,255,255,0.16)", borderRadius: 20, padding: "4px 9px" }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", opacity: recording ? 1 : 0.5 }} />
+                <span style={{ fontSize: 10.5, fontWeight: 700, color: FEED.onFeed }}>{recording ? "REC" : "已暂停"}</span>
+              </span>
+            </div>
+
+            {faceId && detected && (
+              <div style={{ position: "absolute", right: 10, top: 10, fontSize: 10, color: FEED.onFeedSub, background: "rgba(0,0,0,0.32)", padding: "3px 8px", borderRadius: 6 }}>
+                面部特征匹配：{pet.name}
+              </div>
+            )}
+
+            {detected ? (
+              <>
+                <div style={{ position: "absolute", left: "30%", top: "42%", width: "42%", height: "33%", border: `2px solid ${FEED.accent}`, borderRadius: 6 }}>
+                  {["-6px -6px", "-6px calc(100% - 4px)", "calc(100% - 4px) -6px", "calc(100% - 4px) calc(100% - 4px)"].map((pos, i) => (
+                    <span key={i} style={{ position: "absolute", left: pos.split(" ")[0], top: pos.split(" ")[1], width: 10, height: 10, borderLeft: i % 2 === 0 ? `2px solid ${FEED.accent}` : "none", borderRight: i % 2 === 1 ? `2px solid ${FEED.accent}` : "none", borderTop: i < 2 ? `2px solid ${FEED.accent}` : "none", borderBottom: i >= 2 ? `2px solid ${FEED.accent}` : "none" }} />
+                  ))}
+                </div>
+                <div style={{ position: "absolute", left: "30%", top: "calc(42% - 28px)", background: FEED.accent, color: "#04291C", fontSize: 11, fontWeight: 800, padding: "4px 10px", borderRadius: 7 }}>
+                  {pet.species} · 置信度 {confidence}%
+                </div>
+                {skeleton && <div style={{ position: "absolute", left: "30%", top: "calc(75% + 6px)", fontSize: 10.5, color: FEED.accent, fontWeight: 600 }}>骨骼追踪 17 关键点已锁定</div>}
+              </>
+            ) : (
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ fontSize: 12.5, color: FEED.onFeedSub }}>画面中暂未检测到宠物活动</div>
+              </div>
+            )}
+
+            <div style={{ position: "absolute", left: 12, bottom: 10, fontSize: 10, color: FEED.onFeedSub }}>1080P · 30fps · AI推理延迟 23ms</div>
+
+            {showAnomaly && (
+              <div style={{ position: "absolute", left: 10, right: 10, bottom: 32, background: "rgba(184,74,72,0.92)", borderRadius: 12, padding: "8px 10px", display: "flex", alignItems: "center", gap: 8 }}>
+                <AlertTriangle size={14} color="#fff" />
+                <div style={{ flex: 1, fontSize: 11, color: "#fff", fontWeight: 600 }}>检测到异常行为：持续舔舐动作增多</div>
+                <button onClick={onGoAI} style={{ background: "rgba(255,255,255,0.92)", border: "none", borderRadius: 14, padding: "4px 9px", fontSize: 10.5, fontWeight: 700, color: C.danger, cursor: "pointer" }}>问AI</button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* controls — ordinary light glass, identical to the device page */}
+      {camera.online && (
+        <div style={{ ...glass(16, { padding: "10px 14px" }), marginTop: 12, display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => setRecording(!recording)} style={{ background: C.primaryTint, border: "none", borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+            {recording ? <Pause size={13} color={C.primaryDeep} /> : <Play size={13} color={C.primaryDeep} />}
+          </button>
+          <div style={{ flex: 1, fontSize: 12.5, color: C.text, fontWeight: 600 }}>{recording ? "正在录制中" : "录制已暂停"}</div>
+          <Badge tone={recording ? "danger" : "dark"}>{recording ? "REC" : "暂停"}</Badge>
+        </div>
+      )}
+
+      {camera.online && detected && alertOn && (
+        <button onClick={() => setShowAnomaly(true)} disabled={showAnomaly} style={{
+          width: "100%", marginTop: 10, background: "transparent", border: `1px dashed rgba(10,10,11,0.18)`,
+          borderRadius: 14, padding: 11, color: C.sub, fontSize: 11.5, cursor: showAnomaly ? "default" : "pointer",
+        }}>
+          {showAnomaly ? "已触发异常警报" : "模拟触发一次异常行为检测"}
+        </button>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
+        {[
+          { icon: Smile, label: "面部识别", on: faceId, set: setFaceId },
+          { icon: Bone, label: "骨骼追踪", on: skeleton, set: setSkeleton },
+          { icon: Moon, label: "夜视模式", on: night, set: setNight },
+          { icon: AlertTriangle, label: "异常警报", on: alertOn, set: setAlertOn },
+        ].map((it) => (
+          <div key={it.label} style={{ ...glass(14, { padding: "10px 12px" }), display: "flex", alignItems: "center", gap: 8 }}>
+            <it.icon size={15} color={it.on ? C.primaryDeep : C.subtle} />
+            <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: C.text }}>{it.label}</div>
+            <Toggle on={it.on} onClick={() => it.set(!it.on)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============================== BOTTOM SHEETS ============================== */
+function NotificationsSheet({ onClose }) {
+  return (
+    <GlassSheet title="通知" onClose={onClose}>
+      {NOTIFS.map((n, i) => (
+        <div key={i} style={{ display: "flex", gap: 12, padding: "13px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+          <div style={{ fontSize: 20 }}>{n.icon}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{n.title}</div>
+            <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{n.desc}</div>
+          </div>
+          <div style={{ fontSize: 10.5, color: C.subtle, whiteSpace: "nowrap" }}>{n.time}</div>
+        </div>
+      ))}
+    </GlassSheet>
+  );
+}
+
+function PetSwitcherSheet({ pets, activeId, onSwitch, onAdd, onClose }) {
+  const presets = ["momo", "coco", "lucky"].filter((p) => !pets.some((pp) => pp.id.startsWith(p)));
+  const presetInfo = { momo: { label: "Momo · 布偶猫", avatar: "🐱" }, coco: { label: "Coco · 拉布拉多", avatar: "🐶" }, lucky: { label: "Lucky · 英短", avatar: "🐈" } };
+  return (
+    <GlassSheet title="我的宠物" onClose={onClose}>
+      {pets.map((p, i) => (
+        <button key={p.id} onClick={() => { onSwitch(p.id); onClose(); }} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 8px", borderRadius: 14, border: "none", background: p.id === activeId ? C.primaryTint : "transparent", cursor: "pointer", marginTop: i ? 4 : 0, textAlign: "left" }}>
+          <PetAvatar pet={p} size={42} editable={false} />
+          <div style={{ flex: 1 }}><div style={{ fontSize: 13.5, fontWeight: 700, color: C.text }}>{p.name}</div><div style={{ fontSize: 11, color: C.sub }}>{p.species} · {p.age}</div></div>
+          {p.id === activeId && <Check size={16} color={C.primaryDeep} />}
+        </button>
+      ))}
+      {presets.length > 0 && (
+        <>
+          <div style={{ fontSize: 11.5, color: C.subtle, margin: "14px 2px 8px", fontWeight: 600 }}>添加宠物</div>
+          {presets.map((p) => (
+            <button key={p} onClick={() => onAdd(p)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "11px 8px", borderRadius: 14, border: `1px dashed ${C.glassBorder}`, background: "transparent", cursor: "pointer", marginBottom: 6, textAlign: "left" }}>
+              <div style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(255,255,255,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>{presetInfo[p].avatar}</div>
+              <div style={{ flex: 1, fontSize: 13, color: C.text, fontWeight: 600 }}>{presetInfo[p].label}</div>
+              <Plus size={16} color={C.primaryDeep} />
+            </button>
+          ))}
+        </>
+      )}
+    </GlassSheet>
+  );
+}
+
+function FamilySheet({ onClose, toast }) {
+  const [members, setMembers] = useState(FAMILY);
+  return (
+    <GlassSheet title="家庭成员" onClose={onClose}>
+      {members.map((m, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+          <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.7)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{m.avatar}</div>
+          <div style={{ flex: 1 }}><div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{m.name}</div><div style={{ fontSize: 11, color: C.sub }}>{m.role}</div></div>
+        </div>
+      ))}
+      <button onClick={() => { setMembers([...members, { name: "待确认", role: "邀请中…", avatar: "⏳" }]); toast("邀请链接已生成"); }} style={{ ...pill({ width: "100%", marginTop: 14, padding: 13, fontWeight: 600, fontSize: 13 }) }}>+ 邀请家庭成员</button>
+    </GlassSheet>
+  );
+}
+
+function RemindersSheet({ onClose }) {
+  const [state, setState] = useState({ daily: true, alert: true, battery: true, care: false });
+  const items = [
+    { key: "daily", label: "每日健康日报推送" },
+    { key: "alert", label: "异常预警实时通知" },
+    { key: "battery", label: "设备低电量提醒" },
+    { key: "care", label: "服药 / 驱虫提醒" },
+  ];
+  return (
+    <GlassSheet title="提醒设置" onClose={onClose}>
+      {items.map((it, i) => (
+        <div key={it.key} style={{ display: "flex", alignItems: "center", padding: "12px 0", borderTop: i ? `1px solid ${C.hair}` : "none" }}>
+          <div style={{ flex: 1, fontSize: 13, color: C.text, fontWeight: 500 }}>{it.label}</div>
+          <Toggle on={state[it.key]} onClick={() => setState({ ...state, [it.key]: !state[it.key] })} />
+        </div>
+      ))}
+    </GlassSheet>
+  );
+}
+
+function PermissionsSheet({ onClose }) {
+  const [state, setState] = useState({ loc: true, notif: true, sync: true, mic: false });
+  const items = [
+    { key: "loc", label: "位置权限（防走失）" },
+    { key: "notif", label: "通知权限" },
+    { key: "sync", label: "健康数据云同步" },
+    { key: "mic", label: "麦克风（声音分析）" },
+  ];
+  return (
+    <GlassSheet title="权限管理" onClose={onClose}>
+      <div style={{ marginBottom: 4 }}><Badge tone="gold">AI高级版</Badge></div>
+      {items.map((it, i) => (
+        <div key={it.key} style={{ display: "flex", alignItems: "center", padding: "12px 0", borderTop: `1px solid ${C.hair}` }}>
+          <div style={{ flex: 1, fontSize: 13, color: C.text, fontWeight: 500 }}>{it.label}</div>
+          <Toggle on={state[it.key]} onClick={() => setState({ ...state, [it.key]: !state[it.key] })} />
+        </div>
+      ))}
+    </GlassSheet>
+  );
+}
+
+function HelpSheet({ onClose }) {
+  const [feedback, setFeedback] = useState("");
+  const [sent, setSent] = useState(false);
+  return (
+    <GlassSheet title="帮助与反馈" onClose={onClose}>
+      <Accordion items={HELP_FAQ} />
+      <div style={{ fontSize: 12.5, fontWeight: 700, color: C.text, margin: "16px 0 8px" }}>没找到答案？留言给我们</div>
+      {sent ? (
+        <div style={{ ...glass(14, { padding: 12 }), fontSize: 12.5, color: C.primaryDeep }}>感谢反馈，我们会尽快处理～</div>
+      ) : (
+        <>
+          <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="请描述你遇到的问题…" rows={3}
+            style={{ width: "100%", border: `1px solid ${C.glassBorder}`, background: "rgba(255,255,255,0.7)", borderRadius: 14, padding: 12, fontSize: 13, outline: "none", resize: "none", color: C.text, fontFamily: "inherit" }} />
+          <button onClick={() => feedback.trim() && setSent(true)} style={{ ...pill({ width: "100%", marginTop: 8, padding: 12, fontWeight: 600, fontSize: 13, background: feedback.trim() ? C.primary : "rgba(10,10,11,0.18)", boxShadow: feedback.trim() ? "0 6px 18px rgba(10,10,11,0.22)" : "none" }) }}>提交反馈</button>
+        </>
+      )}
+    </GlassSheet>
+  );
+}
+
+function DeviceSettingsSheet({ onClose }) {
+  const [unit, setUnit] = useState("metric");
+  const [sensitivity, setSensitivity] = useState("mid");
+  const [silent, setSilent] = useState(false);
+  return (
+    <GlassSheet title="设备设置" onClose={onClose}>
+      <div style={{ fontSize: 12, color: C.sub, marginBottom: 6, fontWeight: 600 }}>单位</div>
+      <Segmented options={[{ key: "metric", label: "公制 (kg/°C)" }, { key: "imperial", label: "英制 (lb/°F)" }]} value={unit} onChange={setUnit} width="100%" />
+      <div style={{ fontSize: 12, color: C.sub, margin: "16px 0 6px", fontWeight: 600 }}>运动检测灵敏度</div>
+      <Segmented options={[{ key: "low", label: "低" }, { key: "mid", label: "中" }, { key: "high", label: "高" }]} value={sensitivity} onChange={setSensitivity} width="100%" />
+      <div style={{ display: "flex", alignItems: "center", padding: "16px 0 4px" }}>
+        <div style={{ flex: 1, fontSize: 13, color: C.text, fontWeight: 500 }}>静音模式（关闭项圈提示音）</div>
+        <Toggle on={silent} onClick={() => setSilent(!silent)} />
+      </div>
+    </GlassSheet>
+  );
+}
+
+function DeviceHelpSheet({ onClose }) {
+  return (
+    <GlassSheet title="设备帮助" onClose={onClose}>
+      <Accordion items={DEVICE_FAQ} />
+    </GlassSheet>
+  );
+}
+
+/* ============================== BOTTOM NAV ============================== */
+function BottomNav({ tab, setTab }) {
+  const items = [
+    { key: "home", label: "首页", icon: Home }, { key: "health", label: "健康", icon: HeartPulse },
+    { key: "ai", label: "AI助手", icon: Bot }, { key: "device", label: "设备", icon: Watch }, { key: "profile", label: "我的", icon: User },
+  ];
+  return (
+    <div style={{
+      position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px 10px 24px",
+      ...frost(0), borderRadius: 0, borderLeft: "none", borderRight: "none", borderBottom: "none",
+      display: "flex", gap: 4,
+    }}>
+      {items.map((it) => {
+        const active = tab === it.key;
+        return (
+          <button key={it.key} onClick={() => setTab(it.key)} style={{
+            flex: 1, border: "none", borderRadius: 16, display: "flex", flexDirection: "column",
+            alignItems: "center", gap: 3, cursor: "pointer", padding: "6px 0",
+            background: active ? "linear-gradient(160deg,rgba(255,255,255,0.9),rgba(255,255,255,0.5))" : "none",
+            boxShadow: active ? "0 2px 10px rgba(10,10,11,0.10), inset 0 1px 0 rgba(255,255,255,1)" : "none",
+            border: active ? "1px solid rgba(255,255,255,0.7)" : "1px solid transparent",
+            transition: "background .2s, box-shadow .2s",
+          }}>
+            <it.icon size={19} color={active ? C.primaryDeep : C.subtle} />
+            <span style={{ fontSize: 9.5, color: active ? C.primaryDeep : C.subtle, fontWeight: active ? 700 : 500 }}>{it.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============================== APP ============================== */
+function App() {
+  const [pets, setPets] = useState([makePet("momo")]);
+  const [activeId, setActiveId] = useState(pets[0].id);
+  const activePet = pets.find((p) => p.id === activeId) || pets[0];
+
+  const [tab, setTab] = useState("home");
+  const [overlay, setOverlay] = useState(null);
+  const [sheet, setSheet] = useState(null);
+  const [toastText, setToastText] = useState("");
+  const [aiSeed, setAiSeed] = useState(null);
+  const [unread, setUnread] = useState(3);
+  const [cameraId, setCameraId] = useState("living");
+  const [scrolled, setScrolled] = useState(0);
+
+  const toast = (t) => { setToastText(t); setTimeout(() => setToastText(""), 1600); };
+
+  const baseAIMessages = (petName) => [
+    { role: "user", text: `为什么我家猫最近一直舔屁股？` },
+    { role: "assistant", text: `根据${petName}近期的行为数据分析，舔屁股的频率比过去7天增加了60%，可能的原因包括：\n1. 肛门腺问题\n2. 肠胃不适（软便）\n3. 寄生虫感染\n\n结合${petName}的排便记录（近3天有软便情况），建议：\n• 观察排便情况\n• 检查肛门腺是否需要清理\n• 必要时咨询宠物医生`, action: "生成就医建议" },
+  ];
+
+  const consultFromAlert = () => {
+    setAiSeed([
+      ...baseAIMessages(activePet.name),
+      { role: "user", text: "帮我看看这次的活动量下降预警" },
+      { role: "assistant", text: `这次预警是因为${activePet.name}连续3天活动量下降了32%，属于中风险。结合近期偶有软便，可能与肠胃不适、季节变化或情绪压力有关。建议今晚多陪伴互动，并持续观察饮食与排便，若3天内无改善建议就医。`, action: "生成就医建议" },
+    ]);
+    setOverlay(null); setTab("ai");
+  };
+
+  const consultFromCamera = () => {
+    setAiSeed([
+      ...baseAIMessages(activePet.name),
+      { role: "user", text: "客厅摄像头刚才检测到异常行为，帮我看看" },
+      { role: "assistant", text: `摄像头画面显示${activePet.name}最近的舔舐动作比平时更频繁，结合行为数据分析，这与近期的活动量下降、软便情况是相互印证的，建议按照上面的建议先观察1-2天，如果没有缓解就尽快就医。`, action: "生成就医建议" },
+    ]);
+    setOverlay(null); setTab("ai");
+  };
+
+  const openOverlay = (name) => setOverlay(name);
+  const openSheet = (name) => setSheet(name);
+  const closeSheet = () => setSheet(null);
+
+  const switchPet = (id) => { setActiveId(id); toast("已切换宠物"); };
+  const addPet = (preset) => {
+    const np = makePet(preset);
+    setPets((p) => [...p, np]);
+    setActiveId(np.id);
+    setSheet(null);
+    toast(`已添加 ${np.name} 到你的宠物列表`);
+  };
+  const saveProfile = (changes) => setPets((p) => p.map((pp) => (pp.id === activeId ? { ...pp, ...changes } : pp)));
+  const setPhoto = (dataUrl) => { saveProfile({ photo: dataUrl }); toast("头像已更新"); };
+
+  let content;
+  if (overlay === "alert") content = <AlertDetailScreen pet={activePet} onBack={() => setOverlay(null)} onConsultAI={consultFromAlert} />;
+  else if (overlay === "personality") content = <PersonalityScreen pet={activePet} onBack={() => setOverlay(null)} />;
+  else if (overlay === "petProfile") content = <PetProfileScreen pet={activePet} onBack={() => setOverlay(null)} onSave={saveProfile} toast={toast} onPhoto={setPhoto} />;
+  else if (overlay === "healthRecords") content = <HealthRecordsScreen pet={activePet} onBack={() => setOverlay(null)} toast={toast} />;
+  else if (overlay === "cameraList") content = <CameraListScreen onBack={() => setOverlay(null)} onOpenCamera={(id) => { setCameraId(id); setOverlay("cameraMonitor"); }} toast={toast} />;
+  else if (overlay === "cameraMonitor") content = <CameraMonitorScreen pet={activePet} cameraId={cameraId} setCameraId={setCameraId} onBack={() => setOverlay("cameraList")} onGoAI={consultFromCamera} toast={toast} />;
+  else if (tab === "home") content = <HomeScreen pet={activePet} onPhoto={setPhoto} goAlert={() => setOverlay("alert")} goCamera={() => { setCameraId("living"); setOverlay("cameraMonitor"); }} toast={toast} openSheet={(s) => { if (s === "notifications") setUnread(0); openSheet(s); }} unread={unread} />;
+  else if (tab === "health") content = <HealthScreen pet={activePet} goAlert={() => setOverlay("alert")} />;
+  else if (tab === "ai") content = <AIScreen pet={activePet} initialMessages={aiSeed || baseAIMessages(activePet.name)} consumeInitial={() => setAiSeed(null)} />;
+  else if (tab === "device") content = <DeviceScreen toast={toast} openSheet={openSheet} openOverlay={openOverlay} />;
+  else if (tab === "profile") content = <ProfileScreen pet={activePet} openSheet={openSheet} openOverlay={openOverlay} toast={toast} />;
+
+  return (
+    <div style={{ width: "100%", minHeight: "100vh", background: "#DCDDE1", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Poppins','PingFang SC','Helvetica Neue',Arial,sans-serif", padding: "24px 0" }}>
+      <div style={{ width: 390, height: 800, borderRadius: 44, overflow: "hidden", position: "relative", boxShadow: "0 24px 70px rgba(10,10,11,0.25)", border: "8px solid #0A0A0B", display: "flex", flexDirection: "column", ...AURORA_BG }}>
+        <StatusBar />
+        {/* scroll-reactive glass: the bar materialises as content slides under it */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: 46, zIndex: 300, pointerEvents: "none",
+          opacity: Math.min(1, scrolled / 40),
+          background: "rgba(246,246,248,0.72)",
+          backdropFilter: "blur(30px) saturate(190%)", WebkitBackdropFilter: "blur(30px) saturate(190%)",
+          borderBottom: "1px solid rgba(255,255,255,0.5)",
+          maskImage: "linear-gradient(180deg,#000 62%,transparent)",
+          WebkitMaskImage: "linear-gradient(180deg,#000 62%,transparent)",
+          transition: "opacity .18s ease",
+        }} />
+        <div
+          key={overlay || tab}
+          onScroll={(e) => setScrolled(e.currentTarget.scrollTop)}
+          style={{ flex: 1, overflowY: "auto", position: "relative", WebkitOverflowScrolling: "touch" }}
+        >{content}</div>
+        {!overlay && <BottomNav tab={tab} setTab={setTab} />}
+        <Toast text={toastText} />
+        {sheet === "notifications" && <NotificationsSheet onClose={closeSheet} />}
+        {sheet === "petSwitcher" && <PetSwitcherSheet pets={pets} activeId={activeId} onSwitch={switchPet} onAdd={addPet} onClose={closeSheet} />}
+        {sheet === "family" && <FamilySheet onClose={closeSheet} toast={toast} />}
+        {sheet === "reminders" && <RemindersSheet onClose={closeSheet} />}
+        {sheet === "permissions" && <PermissionsSheet onClose={closeSheet} />}
+        {sheet === "help" && <HelpSheet onClose={closeSheet} />}
+        {sheet === "deviceSettings" && <DeviceSettingsSheet onClose={closeSheet} />}
+        {sheet === "deviceHelp" && <DeviceHelpSheet onClose={closeSheet} />}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
